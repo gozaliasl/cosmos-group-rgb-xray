@@ -36,7 +36,7 @@ MODE="${1:-all}"
 shift || true   # consume mode arg (may not be set)
 
 CATALOG="$REPO_ROOT/catalogs/top20_cutout_combined.csv"
-OUTPUT="/n23data2/gozaliasl/groups_cutout/group_inputs"
+OUTPUT="/n23data2/gozaliasl/groups_cutouts/group_inputs"
 JWST_DIR="/n23data2/cosmosweb/COSMOS-Web_Jan24/NIRCam/v0.8"
 HST_DIR="/n17data/shuntov/COSMOS-Web/Images_HST-ACS/Jan24Tiles"
 XRAY_DIR="/n23data2/gozaliasl/xray_maps"

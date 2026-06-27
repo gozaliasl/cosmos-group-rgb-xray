@@ -81,22 +81,22 @@ Dependencies: `numpy astropy reproject scipy scikit-image Pillow shapely`
 # JWST NIRCam only
 python scripts/make_cutouts.py --jwst \
     --catalog catalogs/top20_cutout_combined.csv \
-    --output  /n23data2/gozaliasl/groups_cutout/group_inputs
+    --output  /n23data2/gozaliasl/groups_cutouts/group_inputs
 
 # JWST + HST
 python scripts/make_cutouts.py --jwst --hst \
     --catalog catalogs/top20_cutout_combined.csv \
-    --output  /n23data2/gozaliasl/groups_cutout/group_inputs
+    --output  /n23data2/gozaliasl/groups_cutouts/group_inputs
 
 # X-ray maps only
 python scripts/make_cutouts.py --xray \
     --catalog catalogs/top20_cutout_combined.csv \
-    --output  /n23data2/gozaliasl/groups_cutout/group_inputs
+    --output  /n23data2/gozaliasl/groups_cutouts/group_inputs
 
 # Everything for specific groups, override size
 python scripts/make_cutouts.py --jwst --hst --xray \
     --catalog catalogs/top20_cutout_combined.csv \
-    --output  /n23data2/gozaliasl/groups_cutout/group_inputs \
+    --output  /n23data2/gozaliasl/groups_cutouts/group_inputs \
     --ids 15 41 376 --size 300 --overwrite
 ```
 
@@ -142,8 +142,8 @@ group_inputs/<group_id>/
 ```bash
 python -m cosmos_rgb_xray.batch \
     --catalog   catalogs/top20_cutout_combined.csv \
-    --data-root /n23data2/gozaliasl/groups_cutout/group_inputs \
-    --output-dir /n23data2/gozaliasl/groups_cutout/rgb_xray_outputs \
+    --data-root /n23data2/gozaliasl/groups_cutouts/group_inputs \
+    --output-dir /n23data2/gozaliasl/groups_cutouts/rgb_xray_outputs \
     --jobs 8 --verbose
 ```
 
