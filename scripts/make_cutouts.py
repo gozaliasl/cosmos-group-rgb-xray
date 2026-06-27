@@ -350,57 +350,117 @@ def main() -> None:
     if args.ids:
         groups = [g for g in groups if g["id"] in args.ids]
 
+    # Drop bad rows (Dec=0 or RA=0 almost certainly means missing data)
+    bad = [g for g in groups if abs(g["dec"]) < 0.1 or g["ra"] == 0]
+    if bad:
+        print(f"WARNING: skipping {len(bad)} groups with invalid coordinates: "
+              f"{[g['id'] for g in bad]}", flush=True)
+        groups = [g for g in groups if g not in bad]
+
     print(f"Groups     : {len(groups)}", flush=True)
     print(f"Data types : "
           f"{'JWST ' if args.jwst else ''}"
           f"{'HST '  if args.hst  else ''}"
           f"{'X-ray' if args.xray else ''}", flush=True)
-    if args.jwst:
-        print(f"JWST dir   : {args.jwst_dir}", flush=True)
-    if args.hst:
-        print(f"HST dir    : {args.hst_dir}",  flush=True)
-    if args.xray:
-        print(f"X-ray dir  : {args.xray_dir}", flush=True)
+    if args.jwst:  print(f"JWST dir   : {args.jwst_dir}", flush=True)
+    if args.hst:   print(f"HST dir    : {args.hst_dir}",  flush=True)
+    if args.xray:  print(f"X-ray dir  : {args.xray_dir}", flush=True)
     print(f"Output     : {args.output}  (created automatically)", flush=True)
 
-    t0 = time.time()
-    ok = err = 0
+    # ── Pre-compute per-group metadata ────────────────────────────────────────
     for g in groups:
-        gid   = g["id"]
-        ra_o, dec_o = g["ra"],    g["dec"]       # optical centre
-        ra_x, dec_x = g["ra_xray"], g["dec_xray"] # X-ray peak
+        coord = SkyCoord(ra=g["ra"] * u.deg, dec=g["dec"] * u.deg)
+        g["tile"] = find_tile(coord)
         if args.size:
-            size = args.size
+            g["size"] = args.size
         elif args.radius:
-            size = _cutout_arcsec(g.get("z", 0), r_mpc=args.radius)
-        else:
-            size = g["size"]
-        out_dir = args.output / str(gid)
-        coord   = SkyCoord(ra=ra_o * u.deg, dec=dec_o * u.deg)
-        tile    = find_tile(coord)
+            g["size"] = _cutout_arcsec(g.get("z", 0), r_mpc=args.radius)
+        # else: use size already set from catalog / redshift in load_catalog
 
-        print(f"\n[{gid}] RA={ra_o:.5f} Dec={dec_o:.5f}  tile={tile}  size={size:.0f}\"", flush=True)
+    # ── Mosaic-centric loop: one mosaic loaded → all groups cut from it ───────
+    # Strategy: iterate (tile, filter) pairs; load mosaic once per pair,
+    # cut every group that falls in that tile before moving on.
+    # This matches the --max_cache_size=1 pattern and avoids re-loading.
 
-        n = 0
-        try:
-            if args.jwst:
-                n += cut_jwst(gid, ra_o, dec_o, size, tile, out_dir,
-                              args.res, args.overwrite, args.jwst_dir)
-            if args.hst:
-                n += cut_hst(gid, ra_o, dec_o, size, tile, out_dir,
-                             args.res, args.overwrite, args.hst_dir)
-            if args.xray:
-                cx = ra_x if args.xray_centre == "xray" else ra_o
-                cy = dec_x if args.xray_centre == "xray" else dec_o
-                n += cut_xray(gid, cx, cy, size, out_dir,
-                              args.overwrite, args.xray_dir)
-            ok += 1 if n > 0 else 0
-            err += 1 if n == 0 else 0
-        except Exception as e:
-            print(f"  [{gid}] ERROR: {e}", flush=True)
-            err += 1
+    from collections import defaultdict
+    by_tile: Dict[str, List[dict]] = defaultdict(list)
+    for g in groups:
+        by_tile[g["tile"]].append(g)
 
+    t0 = time.time()
+    results: Dict[int, int] = {g["id"]: 0 for g in groups}  # counts cuts made
+
+    # ── JWST: tile → filter → cut all groups in tile ──────────────────────────
+    if args.jwst:
+        print(f"\n{'═'*50}\n  JWST NIRCam\n{'═'*50}", flush=True)
+        for tile, tile_groups in sorted(by_tile.items()):
+            print(f"\n  Tile {tile}  ({len(tile_groups)} groups)", flush=True)
+            for filt in JWST_FILTERS:
+                mosaic = jwst_mosaic_path(filt, tile, args.res, args.jwst_dir)
+                entry  = _cache.get(mosaic)
+                if entry is None:
+                    print(f"  {filt} — mosaic not found, skipping", flush=True)
+                    continue
+                print(f"  {filt}", flush=True)
+                for g in tile_groups:
+                    out = args.output / str(g["id"]) / f"{g['id']}_{filt}.fits"
+                    if out.exists() and not args.overwrite:
+                        print(f"    [{g['id']}] exists — skip", flush=True)
+                        results[g["id"]] += 1
+                        continue
+                    if cut_and_save(mosaic, g["ra"], g["dec"], g["size"],
+                                    out, f"[{g['id']}] {filt}"):
+                        results[g["id"]] += 1
+
+    # ── HST: tile → cut all groups in tile ───────────────────────────────────
+    if args.hst:
+        print(f"\n{'═'*50}\n  HST ACS F814W\n{'═'*50}", flush=True)
+        for tile, tile_groups in sorted(by_tile.items()):
+            print(f"\n  Tile {tile}  ({len(tile_groups)} groups)", flush=True)
+            mosaic = hst_mosaic_path(tile, args.res, args.hst_dir)
+            entry  = _cache.get(mosaic)
+            if entry is None:
+                print(f"  F814W — mosaic not found, skipping", flush=True)
+                continue
+            for g in tile_groups:
+                out = args.output / str(g["id"]) / f"{g['id']}_F814W.fits"
+                if out.exists() and not args.overwrite:
+                    print(f"    [{g['id']}] exists — skip", flush=True)
+                    results[g["id"]] += 1
+                    continue
+                if cut_and_save(mosaic, g["ra"], g["dec"], g["size"],
+                                out, f"[{g['id']}] F814W"):
+                    results[g["id"]] += 1
+
+    # ── X-ray: full-survey maps, no tile needed — cut all groups ─────────────
+    if args.xray:
+        print(f"\n{'═'*50}\n  X-ray (Chandra+XMM)\n{'═'*50}", flush=True)
+        for map_name, label, suffix in [
+            (XRAY_LARGE_MAP, "large-scale (noem)", "large_scale"),
+            (XRAY_SMALL_MAP, "compact (wavelet)",  "small_scale"),
+        ]:
+            xray_map = args.xray_dir / map_name
+            entry = _cache.get(xray_map)
+            if entry is None:
+                print(f"  {label} — map not found, skipping", flush=True)
+                continue
+            print(f"\n  {label}", flush=True)
+            for g in groups:
+                out = args.output / str(g["id"]) / f"{g['id']}_{suffix}.fits"
+                if out.exists() and not args.overwrite:
+                    print(f"    [{g['id']}] exists — skip", flush=True)
+                    results[g["id"]] += 1
+                    continue
+                cx = g["ra_xray"]  if args.xray_centre == "xray" else g["ra"]
+                cy = g["dec_xray"] if args.xray_centre == "xray" else g["dec"]
+                if cut_and_save(xray_map, cx, cy, g["size"] * 1.5,
+                                out, f"[{g['id']}] {suffix}"):
+                    results[g["id"]] += 1
+
+    # ── Summary ───────────────────────────────────────────────────────────────
     elapsed = time.time() - t0
+    ok  = sum(1 for v in results.values() if v > 0)
+    err = len(results) - ok
     print(f"\n{'─'*50}", flush=True)
     print(f"Done — {ok} ok  {err} failed  {elapsed:.0f}s", flush=True)
     print(f"{_cache.stats()}", flush=True)
