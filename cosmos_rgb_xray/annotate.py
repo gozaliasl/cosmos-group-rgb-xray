@@ -50,9 +50,10 @@ def annotate_and_save(
     save_tiff: bool = False,
     max_px: int = 4000,
     dpi: int = 300,
-    fontsize: int = 11,
+    fontsize: int = 14,
     tick_color: str = "white",
     scalebar_color: str = "white",
+    margin_color: str = "white",   # background outside the image axes
     verbose: bool = False,
 ) -> None:
     """
@@ -100,49 +101,64 @@ def annotate_and_save(
     wcs = WCS(ref_hdr)
 
     # ── Figure with WCSAxes ───────────────────────────────────────────────────
-    fig_w = w / dpi
-    fig_h = h / dpi
-    fig   = plt.figure(figsize=(fig_w, fig_h), dpi=dpi)
-    ax    = fig.add_subplot(1, 1, 1, projection=wcs)
+    # Add margins (in inches) for axis labels so image fills the rest cleanly.
+    # Without this, matplotlib reserves space for the Dec label but the figure
+    # width doesn't account for it, producing a black strip on the left.
+    label_margin_in = fontsize / dpi * 6   # ~label height in inches
+    fig_w = w / dpi + label_margin_in * 1.5   # left: Dec label + ticks
+    fig_h = h / dpi + label_margin_in * 1.2   # bottom: RA label + ticks
+
+    left_frac   = label_margin_in * 1.5 / fig_w
+    bottom_frac = label_margin_in * 1.2 / fig_h
+
+    fig = plt.figure(figsize=(fig_w, fig_h), dpi=dpi)
+    fig.patch.set_facecolor(margin_color)
+    ax  = fig.add_axes(
+        [left_frac, bottom_frac, 1 - left_frac, 1 - bottom_frac],
+        projection=wcs,
+    )
 
     ax.imshow(rgb, origin="lower", interpolation="nearest",
               aspect="equal", vmin=0, vmax=1)
+    ax.set_facecolor("black")
 
     # ── RA / Dec axes ─────────────────────────────────────────────────────────
     ra_ax  = ax.coords["ra"]
     dec_ax = ax.coords["dec"]
 
-    ra_ax.set_axislabel("RA (J2000)", color=tick_color, fontsize=fontsize)
-    dec_ax.set_axislabel("Dec (J2000)", color=tick_color, fontsize=fontsize)
+    # Labels and tick values sit on the white margin → use dark colour
+    label_color = "black" if margin_color == "white" else tick_color
 
-    ra_ax.set_ticklabel(color=tick_color, fontsize=fontsize - 1,
+    ra_ax.set_axislabel("RA (J2000)",  color=label_color, fontsize=fontsize)
+    dec_ax.set_axislabel("Dec (J2000)", color=label_color, fontsize=fontsize)
+
+    ra_ax.set_ticklabel(color=label_color, fontsize=fontsize - 1,
                         exclude_overlapping=True)
-    dec_ax.set_ticklabel(color=tick_color, fontsize=fontsize - 1,
+    dec_ax.set_ticklabel(color=label_color, fontsize=fontsize - 1,
                          exclude_overlapping=True)
 
-    ra_ax.set_ticks_position("b")    # bottom
-    dec_ax.set_ticks_position("l")   # left
+    ra_ax.set_ticks_position("b")
+    dec_ax.set_ticks_position("l")
 
     ra_ax.display_minor_ticks(True)
     dec_ax.display_minor_ticks(True)
 
-    # Format: RA in HH:MM:SS, Dec in DD:MM:SS
     ra_ax.set_major_formatter("hh:mm:ss")
     dec_ax.set_major_formatter("dd:mm:ss")
 
-    # Tick and spine colour
+    # Spines and tick marks on the image border
     for spine in ax.spines.values():
-        spine.set_edgecolor(tick_color)
-    ax.tick_params(colors=tick_color, which="both")
+        spine.set_edgecolor(label_color)
+    ax.tick_params(colors=label_color, which="both")
 
     # ── Scale bar ─────────────────────────────────────────────────────────────
     bar_arcsec = physical_to_arcsec(scale_kpc, redshift)
     bar_pix    = arcsec_to_pixels(bar_arcsec, wcs)
     bar_pix    = min(bar_pix, w * 0.25)   # never wider than 25% of image
 
-    # Position: lower-left corner with padding
+    # Position: lower-left corner with padding — pushed up enough to clear RA ticks
     pad_x = w * 0.05
-    pad_y = h * 0.05
+    pad_y = h * 0.08
     x0    = pad_x
     x1    = pad_x + bar_pix
     y_bar = pad_y
@@ -180,7 +196,7 @@ def annotate_and_save(
     # ── Save ──────────────────────────────────────────────────────────────────
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output_path, dpi=dpi, bbox_inches="tight",
-                pad_inches=0.02, facecolor="black")
+                pad_inches=0.02, facecolor=margin_color)
     plt.close(fig)
     if verbose:
         sz = output_path.stat().st_size / 1e6

@@ -85,7 +85,7 @@ def overlay_xray(
     redshift: float,
     radius_arcmin: float = 4.0,
     smooth_sigma: float = 60.0,
-    alpha: float = 0.75,
+    alpha: float = 0.65,
     gamma: float = 0.55,
     pmin: float = 30.0,
     pmax: float = 99.5,
@@ -135,7 +135,14 @@ def overlay_xray(
     reproj = reproject_to(xdata, xhdr, ref_hdr)
 
     # --- Smooth (diffuse ICM glow) ---
-    smoothed = gaussian_filter(np.maximum(reproj, 0.0), sigma=smooth_sigma)
+    # Two-pass smoothing: fine pass preserves core structure,
+    # coarse pass (3× sigma) feathers the boundary into a haze
+    # that fills the whole field rather than stopping at a hard edge.
+    raw = np.maximum(reproj, 0.0)
+    smoothed_core = gaussian_filter(raw, sigma=smooth_sigma)
+    smoothed_haze = gaussian_filter(raw, sigma=smooth_sigma * 3.0)
+    # Combine: core structure + wide haze background
+    smoothed = smoothed_core + 0.35 * smoothed_haze
 
     mask = smoothed > 0
     if not np.any(mask):
@@ -146,12 +153,12 @@ def overlay_xray(
     # --- Background clip + normalise ---
     noise_floor = np.percentile(smoothed[mask], pmin)
     smoothed    = np.maximum(smoothed - noise_floor, 0.0)
-    mask        = smoothed > 0
-    if not np.any(mask):
-        return rgb
 
-    peak = np.percentile(smoothed[mask], pmax)
-    norm = np.clip(smoothed / (peak + 1e-12), 0.0, 1.0) ** gamma
+    peak = np.percentile(smoothed[smoothed > 0], pmax)
+    # Log stretch: compresses the bright core so galaxy colours survive,
+    # while lifting the faint extended haze into the purple background
+    k    = 10.0  # log softness — higher = more compression in core
+    norm = np.log1p(k * np.clip(smoothed / (peak + 1e-12), 0.0, 1.0)) / np.log1p(k)
 
     # --- Colour layer ---
     r, g, b = xray_color(redshift)
@@ -161,4 +168,21 @@ def overlay_xray(
     colour_layer[..., 2] = b * norm
 
     # --- Screen blend ---
-    return np.clip(screen(rgb, colour_layer * alpha), 0.0, 1.0)
+    blended = np.clip(screen(rgb, colour_layer * alpha), 0.0, 1.0)
+
+    # --- Faint purple background haze in unlit corners ---
+    # Where the X-ray norm is essentially zero (corners of the image),
+    # add a very subtle purple tint so the background is deep indigo
+    # rather than black, matching the full-field purple look of the
+    # reference image.
+    haze_strength = 0.08
+    haze_norm = gaussian_filter(norm, sigma=smooth_sigma * 5.0)
+    haze_norm = np.clip(haze_norm / (haze_norm.max() + 1e-12), 0.0, 1.0)
+    corner_mask = 1.0 - haze_norm          # strongest where X-ray is faint
+    purple = np.array([r * 0.4, 0.0, b * 0.6], dtype=np.float32)
+    for c in range(3):
+        blended[..., c] = np.clip(
+            blended[..., c] + corner_mask * haze_strength * purple[c], 0.0, 1.0
+        )
+
+    return blended

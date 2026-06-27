@@ -45,17 +45,41 @@ def run_single(
 ) -> None:
     from typing import Optional
 
+    MAX_PX = 4000   # downsample before X-ray overlay to keep processing fast
+
     # Load RGB (TIFF or PNG)
     img = Image.open(rgb_path).convert("RGB")
-    rgb = np.asarray(img, dtype=np.float32) / 255.0
+    orig_w, orig_h = img.size
     if verbose:
-        print(f"RGB loaded: {img.size[0]}×{img.size[1]}", flush=True)
+        print(f"RGB loaded: {orig_w}×{orig_h}", flush=True)
+
+    # Downsample to MAX_PX before expensive X-ray processing
+    if max(orig_w, orig_h) > MAX_PX:
+        scale = MAX_PX / max(orig_w, orig_h)
+        new_w, new_h = int(orig_w * scale), int(orig_h * scale)
+        img = img.resize((new_w, new_h), Image.LANCZOS)
+        if verbose:
+            print(f"  Downsampled to {new_w}×{new_h} for processing", flush=True)
+
+    rgb = np.asarray(img, dtype=np.float32) / 255.0
+    w, h = img.size
 
     # Build WCS reference header from HST / any FITS covering the group
     _, ref_hdr = load_fits(wcs_path)
-    # Patch NAXIS to match the RGB image dimensions
-    ref_hdr["NAXIS1"] = img.size[0]
-    ref_hdr["NAXIS2"] = img.size[1]
+    # Patch NAXIS and pixel scale to match the (possibly downsampled) RGB
+    orig_ref_w = ref_hdr.get("NAXIS1", orig_w)
+    scale_factor = w / orig_ref_w
+    ref_hdr["NAXIS1"] = w
+    ref_hdr["NAXIS2"] = h
+    ref_hdr["CRPIX1"] = ref_hdr.get("CRPIX1", orig_w / 2) * scale_factor
+    ref_hdr["CRPIX2"] = ref_hdr.get("CRPIX2", orig_h / 2) * scale_factor
+    for key in ["CDELT1", "CDELT2"]:
+        if key in ref_hdr:
+            ref_hdr[key] = ref_hdr[key] / scale_factor
+    if "CD1_1" in ref_hdr:
+        for key in ["CD1_1", "CD1_2", "CD2_1", "CD2_2"]:
+            if key in ref_hdr:
+                ref_hdr[key] = ref_hdr[key] / scale_factor
 
     # Overlay X-ray
     rgb_xray = overlay_xray(
