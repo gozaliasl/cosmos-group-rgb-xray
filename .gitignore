@@ -45,3 +45,4 @@ data/group-catalog/
 
 # Credentials / secrets
 .env
+chat_export.md
