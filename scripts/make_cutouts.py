@@ -1,36 +1,57 @@
 #!/usr/bin/env python3
 """
-Cut JWST NIRCam + HST F814W postage stamps for COSMOS-Web galaxy groups.
+COSMOS-Web Group Cutout Pipeline
+=================================
+Cuts postage stamps for galaxy groups from survey mosaics.
 
-Reads a top-20% X-ray group catalog and produces per-group cutouts:
+Supported instruments / data types:
+  --jwst    JWST NIRCam  F115W, F150W, F277W, F444W
+  --hst     HST ACS/WFC  F814W
+  --xray    Chandra+XMM  large-scale (noem) and/or wavelet (wv.3) maps
 
-  <output_root>/<group_id>/
-      <group_id>_F115W.fits
+Input catalog CSV must contain:
+  group_id, RA, Dec
+  Optional: RA_xray_peak, Dec_xray_peak, cutout_arcsec
+
+Output layout (one sub-directory per group):
+  <output>/<group_id>/
+      <group_id>_F115W.fits       JWST
       <group_id>_F150W.fits
       <group_id>_F277W.fits
       <group_id>_F444W.fits
-      <group_id>_F814W.fits     (HST ACS)
+      <group_id>_F814W.fits       HST
+      <group_id>_large_scale.fits X-ray diffuse
+      <group_id>_small_scale.fits X-ray compact
 
-Run on Candide where the mosaics live:
+Examples
+--------
+# JWST only
+python scripts/make_cutouts.py --jwst \\
+    --catalog catalogs/top20_cutout_combined.csv \\
+    --output  /n23data2/gozaliasl/groups_cutout/group_inputs
 
-  python scripts/make_cutouts.py \
-      --catalog catalogs/top20_cutout_combined.csv \
-      --output  /n23data2/gozaliasl/groups_cutout/group_inputs \
-      --size    240 \
-      --res     30
+# JWST + HST
+python scripts/make_cutouts.py --jwst --hst \\
+    --catalog catalogs/top20_cutout_combined.csv \\
+    --output  /n23data2/gozaliasl/groups_cutout/group_inputs
 
-Mosaic paths (Candide):
-  JWST NIRCam: /n23data2/cosmosweb/COSMOS-Web_Jan24/NIRCam/v0.8/
-  HST F814W:   /n17data/shuntov/COSMOS-Web/Images_HST-ACS/Jan24Tiles/
+# X-ray only (for groups already processed)
+python scripts/make_cutouts.py --xray \\
+    --catalog catalogs/top20_cutout_combined.csv \\
+    --output  /n23data2/gozaliasl/groups_cutout/group_inputs
+
+# Everything, specific groups only
+python scripts/make_cutouts.py --jwst --hst --xray \\
+    --catalog catalogs/top20_cutout_combined.csv \\
+    --output  /n23data2/gozaliasl/groups_cutout/group_inputs \\
+    --ids 15 41 376 --size 300 --overwrite
 """
 from __future__ import annotations
 
 import argparse
 import csv
-import sys
 import time
 import warnings
-from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -44,14 +65,18 @@ from shapely.geometry import Polygon
 
 warnings.filterwarnings("ignore", category=UserWarning, module="astropy")
 
-# ─── Paths (Candide) ──────────────────────────────────────────────────────────
+# ── Mosaic paths (Candide) ────────────────────────────────────────────────────
 JWST_BASE = Path("/n23data2/cosmosweb/COSMOS-Web_Jan24/NIRCam/v0.8")
 HST_BASE  = Path("/n17data/shuntov/COSMOS-Web/Images_HST-ACS/Jan24Tiles")
-JWST_FILTERS = ["F115W", "F150W", "F277W", "F444W"]
-RES = 30   # mas pixel scale
+XRAY_BASE = Path("/n23data2/gozaliasl/xray_maps")   # update if different
 
-# ─── COSMOS-Web tile footprints ───────────────────────────────────────────────
-TILE_POLYGONS: Dict[str, List[Tuple[float, float]]] = {
+JWST_FILTERS   = ["F115W", "F150W", "F277W", "F444W"]
+XRAY_LARGE_MAP = "cosmos_chaxmm14_noem_520.fits"    # diffuse / point-src removed
+XRAY_SMALL_MAP = "cosmos_chaxmm14_520_wv.3.fits"    # compact / wavelet scale-3
+
+
+# ── COSMOS-Web tile footprints ────────────────────────────────────────────────
+TILES: Dict[str, List[Tuple[float, float]]] = {
     "A1":  [(149.8703317,2.0856512),(149.7198796,2.1403395),(149.7908786,2.3354095),(149.9413496,2.2807163)],
     "A2":  [(150.0058959,2.0363591),(149.8554506,2.0910612),(149.9264667,2.2861269),(150.0769300,2.2314186)],
     "A3":  [(150.1414523,1.9870553),(149.9910155,2.0417704),(150.0620479,2.2368306),(150.2125019,2.1821081)],
@@ -74,98 +99,95 @@ TILE_POLYGONS: Dict[str, List[Tuple[float, float]]] = {
     "B10": [(150.4784314,2.0692337),(150.3280023,2.1239807),(150.3990815,2.3190234),(150.5495255,2.2642668)],
 }
 
-# ─── Tile determination ───────────────────────────────────────────────────────
 
-def determine_tile(coord: SkyCoord) -> str:
+def find_tile(coord: SkyCoord) -> str:
     pt = Polygon([
         (coord.ra.deg, coord.dec.deg),
         (coord.ra.deg + 1e-7, coord.dec.deg - 1e-7),
         (coord.ra.deg + 1e-7, coord.dec.deg + 1e-7),
         (coord.ra.deg - 1e-7, coord.dec.deg + 1e-7),
     ])
-    for name, corners in TILE_POLYGONS.items():
+    for name, corners in TILES.items():
         if Polygon(corners).intersects(pt):
             return name
-    return "A1"   # fallback (prints a warning below)
+    print(f"  WARNING: ({coord.ra.deg:.4f}, {coord.dec.deg:.4f}) outside all tiles — using A1")
+    return "A1"
 
 
-def hst_tile_for_coord(coord: SkyCoord) -> str:
-    """Map sky position to HST tile name (mirrors JWST tile layout)."""
-    return determine_tile(coord)
+# ── Mosaic paths ──────────────────────────────────────────────────────────────
+
+def jwst_mosaic_path(filter_name: str, tile: str, res: int = 30) -> Path:
+    return JWST_BASE / (
+        f"mosaic_nircam_{filter_name.lower()}_COSMOS-Web_{res}mas_{tile}_v1.0_i2d.fits.gz"
+    )
 
 
-# ─── Mosaic path helpers ──────────────────────────────────────────────────────
-
-def jwst_path(filter_name: str, tile: str, res: int = RES) -> Path:
-    fname = (f"mosaic_nircam_{filter_name.lower()}_COSMOS-Web_"
-             f"{res}mas_{tile}_v1.0_i2d.fits.gz")
-    return JWST_BASE / fname
+def hst_mosaic_path(tile: str, res: int = 30) -> Path:
+    return HST_BASE / (
+        f"mosaic_cosmos_web_2024jan_{res}mas_tile_{tile}_hst_acs_wfc_f814w_drz_zp-28.09.fits"
+    )
 
 
-def hst_path(tile: str, res: int = RES) -> Path:
-    fname = (f"mosaic_cosmos_web_2024jan_{res}mas_tile_{tile}_"
-             f"hst_acs_wfc_f814w_drz_zp-28.09.fits")
-    return HST_BASE / fname
+# ── Mosaic LRU cache ──────────────────────────────────────────────────────────
 
-
-# ─── Mosaic cache ─────────────────────────────────────────────────────────────
-
-class MosaicCache:
-    def __init__(self, max_size: int = 4):
+class _MosaicCache:
+    def __init__(self, max_size: int = 5):
         self._cache: Dict[str, dict] = {}
         self._order: List[str] = []
         self.max_size = max_size
+        self.hits = self.misses = 0
 
     def get(self, path: Path) -> Optional[dict]:
         key = str(path)
         if key in self._cache:
-            self._order.remove(key)
-            self._order.append(key)
+            self._order.remove(key); self._order.append(key)
+            self.hits += 1
             return self._cache[key]
         if not path.exists():
+            print(f"  NOT FOUND: {path}", flush=True)
             return None
-        print(f"    Loading {path.name} ...", flush=True)
+        print(f"  Loading {path.name} ...", flush=True)
         t0 = time.time()
         with fits.open(path, memmap=True) as h:
-            # JWST i2d: SCI in ext 1; HST drz: primary
             ext = 1 if (len(h) > 1 and h[1].data is not None) else 0
-            data   = h[ext].data.copy()
-            header = h[ext].header.copy()
-        wcs = WCS(header)
-        print(f"    {data.shape}  {time.time()-t0:.1f}s", flush=True)
-        entry = {"data": data, "header": header, "wcs": wcs}
-        self._cache[key] = entry
-        self._order.append(key)
+            data, header = h[ext].data.copy(), h[ext].header.copy()
+        entry = {"data": data, "wcs": WCS(header)}
+        print(f"  {data.shape}  {time.time()-t0:.1f}s", flush=True)
+        self._cache[key] = entry; self._order.append(key); self.misses += 1
         while len(self._cache) > self.max_size:
-            old = self._order.pop(0)
-            del self._cache[old]
+            del self._cache[self._order.pop(0)]
         return entry
 
+    def stats(self) -> str:
+        total = self.hits + self.misses
+        rate  = self.hits / total * 100 if total else 0
+        return f"cache {rate:.0f}% hit ({self.hits}/{total})"
 
-_cache = MosaicCache(max_size=4)
+
+_cache = _MosaicCache(max_size=5)
 
 
-# ─── Cutout writer ────────────────────────────────────────────────────────────
+# ── Core cutout writer ────────────────────────────────────────────────────────
 
-def write_cutout(
+def cut_and_save(
     mosaic_path: Path,
     ra: float,
     dec: float,
     size_arcsec: float,
     out_path: Path,
+    label: str = "",
 ) -> bool:
     """
-    Cut size_arcsec × size_arcsec stamp centred on (ra, dec) from mosaic_path.
-    Saves as a minimal FITS (PrimaryHDU + correct WCS). Returns True on success.
+    Extract a stamp from mosaic_path centred on (ra, dec) and save to out_path.
+    WCS of the cutout is preserved exactly. Returns True on success.
     """
     entry = _cache.get(mosaic_path)
     if entry is None:
-        print(f"    NOT FOUND: {mosaic_path.name}", flush=True)
         return False
 
     data, wcs_obj = entry["data"], entry["wcs"]
-    pix_scale_arcsec = abs(wcs_obj.wcs.cdelt[0]) * 3600.0
-    size_pix = int(size_arcsec / pix_scale_arcsec)
+    pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+    size_pix  = max(int(size_arcsec / pix_scale), 10)
 
     coord = SkyCoord(ra=ra * u.deg, dec=dec * u.deg)
     px, py = wcs_obj.world_to_pixel(coord)
@@ -176,127 +198,161 @@ def write_cutout(
             wcs=wcs_obj, mode="partial", fill_value=0.0,
         )
     except Exception as e:
-        print(f"    Cutout failed: {e}", flush=True)
+        print(f"  {label} cutout error: {e}", flush=True)
         return False
 
-    if cutout.data.shape[0] == 0 or cutout.data.shape[1] == 0:
-        print("    Empty cutout — position outside tile?", flush=True)
+    if 0 in cutout.data.shape:
+        print(f"  {label} empty cutout — outside tile?", flush=True)
         return False
 
-    hdu = fits.PrimaryHDU(
-        data=cutout.data.astype(np.float32),
-        header=cutout.wcs.to_header(),
-    )
-    hdu.header["RA_CUT"]  = (ra,  "cutout centre RA  [deg]")
-    hdu.header["DEC_CUT"] = (dec, "cutout centre Dec [deg]")
-    hdu.header["SZ_ARCS"] = (size_arcsec, "cutout size [arcsec]")
+    hdr = cutout.wcs.to_header()
+    hdr["RA_CUT"]  = (ra,          "cutout centre RA [deg]")
+    hdr["DEC_CUT"] = (dec,         "cutout centre Dec [deg]")
+    hdr["SZ_ARCS"] = (size_arcsec, "cutout size [arcsec]")
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    hdu.writeto(out_path, overwrite=True)
-    print(f"    {out_path.name}  {cutout.data.shape}", flush=True)
+    fits.PrimaryHDU(
+        data=cutout.data.astype(np.float32), header=hdr
+    ).writeto(out_path, overwrite=True)
+    print(f"  {label:12s} {out_path.name}  {cutout.data.shape}", flush=True)
     return True
 
 
-# ─── Per-group processing ─────────────────────────────────────────────────────
+# ── Per-instrument cutout helpers ─────────────────────────────────────────────
 
-def process_group(
-    group_id: int,
-    ra: float,
-    dec: float,
-    size_arcsec: float,
-    output_root: Path,
-    res: int = RES,
-    overwrite: bool = False,
-) -> bool:
-    coord = SkyCoord(ra=ra * u.deg, dec=dec * u.deg)
-    tile  = determine_tile(coord)
-    out_dir = output_root / str(group_id)
-
-    print(f"\n[{group_id}] RA={ra:.5f} Dec={dec:.5f} tile={tile} "
-          f"size={size_arcsec:.0f}\"", flush=True)
-
-    any_ok = False
-
-    # JWST NIRCam
+def cut_jwst(group_id: int, ra: float, dec: float, size: float,
+             tile: str, out_dir: Path, res: int, overwrite: bool) -> int:
+    n = 0
     for filt in JWST_FILTERS:
         out = out_dir / f"{group_id}_{filt}.fits"
         if out.exists() and not overwrite:
-            print(f"    {out.name} exists — skip", flush=True)
-            any_ok = True
-            continue
-        ok = write_cutout(jwst_path(filt, tile, res), ra, dec, size_arcsec, out)
-        any_ok = any_ok or ok
-
-    # HST F814W
-    hst_tile = hst_tile_for_coord(coord)
-    hst_p    = hst_path(hst_tile, res)
-    out_hst  = out_dir / f"{group_id}_F814W.fits"
-    if out_hst.exists() and not overwrite:
-        print(f"    {out_hst.name} exists — skip", flush=True)
-    else:
-        write_cutout(hst_p, ra, dec, size_arcsec, out_hst)
-
-    return any_ok
+            print(f"  {filt:12s} exists — skip", flush=True); n += 1; continue
+        if cut_and_save(jwst_mosaic_path(filt, tile, res), ra, dec, size, out, filt):
+            n += 1
+    return n
 
 
-# ─── Catalog loading ──────────────────────────────────────────────────────────
+def cut_hst(group_id: int, ra: float, dec: float, size: float,
+            tile: str, out_dir: Path, res: int, overwrite: bool) -> int:
+    out = out_dir / f"{group_id}_F814W.fits"
+    if out.exists() and not overwrite:
+        print(f"  F814W        exists — skip", flush=True); return 1
+    return 1 if cut_and_save(hst_mosaic_path(tile, res), ra, dec, size, out, "F814W") else 0
 
-def load_groups(catalog_path: Path) -> List[dict]:
+
+def cut_xray(group_id: int, ra: float, dec: float, size: float,
+             out_dir: Path, overwrite: bool) -> int:
+    n = 0
+    for map_name, label, out_suffix in [
+        (XRAY_LARGE_MAP, "xray-large", "large_scale"),
+        (XRAY_SMALL_MAP, "xray-small", "small_scale"),
+    ]:
+        out = out_dir / f"{group_id}_{out_suffix}.fits"
+        if out.exists() and not overwrite:
+            print(f"  {label:12s} exists — skip", flush=True); n += 1; continue
+        # X-ray maps are full-survey: cut a generous radius (1.5× requested)
+        if cut_and_save(XRAY_BASE / map_name, ra, dec, size * 1.5, out, label):
+            n += 1
+    return n
+
+
+# ── Catalog loader ────────────────────────────────────────────────────────────
+
+def load_catalog(path: Path) -> List[dict]:
     groups = []
-    with open(catalog_path, newline="") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
+    with open(path, newline="") as f:
+        for row in csv.DictReader(f):
             try:
-                gid = int(float(row.get("group_id", row.get("ID", 0))))
-                ra  = float(row.get("RA",  row.get("RA_MODEL",  0)))
-                dec = float(row.get("Dec", row.get("DEC_MODEL", 0)))
-                # Prefer X-ray peak position for cutout centre
-                ra  = float(row.get("RA_xray_peak",  ra))
-                dec = float(row.get("Dec_xray_peak", dec))
-                size = float(row.get("cutout_arcsec", 240.0))
-                groups.append({"id": gid, "ra": ra, "dec": dec, "size": size})
+                gid  = int(float(row.get("group_id", row.get("ID", 0))))
+                ra   = float(row.get("RA",  row.get("RA_MODEL",  0)))
+                dec  = float(row.get("Dec", row.get("DEC_MODEL", 0)))
+                # X-ray peak preferred as cutout centre
+                ra_x  = float(row.get("RA_xray_peak",  ra))
+                dec_x = float(row.get("Dec_xray_peak", dec))
+                size  = float(row.get("cutout_arcsec", 240.0))
+                groups.append(dict(id=gid, ra=ra, dec=dec,
+                                   ra_xray=ra_x, dec_xray=dec_x, size=size))
             except (ValueError, KeyError):
                 continue
     return groups
 
 
-# ─── CLI ──────────────────────────────────────────────────────────────────────
+# ── Main ──────────────────────────────────────────────────────────────────────
 
 def main() -> None:
-    p = argparse.ArgumentParser(description="Cut JWST+HST postage stamps for galaxy groups")
-    p.add_argument("--catalog", required=True, type=Path,
-                   help="top-20% CSV catalog (group_id, RA, Dec, cutout_arcsec)")
-    p.add_argument("--output",  required=True, type=Path,
-                   help="root output directory  e.g. /n23data2/gozaliasl/groups_cutout/group_inputs")
-    p.add_argument("--size",    type=float, default=None,
-                   help="Override cutout size [arcsec] for all groups")
-    p.add_argument("--res",     type=int,   default=RES,
-                   help=f"Pixel scale in mas (default: {RES})")
-    p.add_argument("--ids",     nargs="*",  type=int, default=None,
-                   help="Process only these group IDs")
-    p.add_argument("--overwrite", action="store_true")
-    args = p.parse_args()
+    pa = argparse.ArgumentParser(
+        description="Cut JWST / HST / X-ray stamps for COSMOS-Web galaxy groups",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=__doc__,
+    )
+    # What to cut
+    pa.add_argument("--jwst",  action="store_true", help="Cut JWST NIRCam (F115W F150W F277W F444W)")
+    pa.add_argument("--hst",   action="store_true", help="Cut HST ACS F814W")
+    pa.add_argument("--xray",  action="store_true", help="Cut Chandra/XMM X-ray maps (large + compact)")
 
-    groups = load_groups(args.catalog)
+    # Input / output
+    pa.add_argument("--catalog",   required=True, type=Path, help="Group catalog CSV")
+    pa.add_argument("--output",    required=True, type=Path, help="Root output directory")
+
+    # Options
+    pa.add_argument("--ids",       nargs="*", type=int, default=None,
+                    help="Process only these group IDs (default: all)")
+    pa.add_argument("--size",      type=float, default=None,
+                    help="Override cutout size [arcsec] for all groups")
+    pa.add_argument("--res",       type=int,   default=30,
+                    help="JWST/HST pixel scale in mas (default: 30)")
+    pa.add_argument("--overwrite", action="store_true",
+                    help="Re-cut files that already exist")
+    pa.add_argument("--xray-centre", choices=["optical", "xray"], default="xray",
+                    help="Centre X-ray cutout on optical (RA/Dec) or X-ray peak (default: xray)")
+    args = pa.parse_args()
+
+    if not (args.jwst or args.hst or args.xray):
+        pa.error("Specify at least one of --jwst, --hst, --xray")
+
+    groups = load_catalog(args.catalog)
     if args.ids:
         groups = [g for g in groups if g["id"] in args.ids]
+    print(f"Groups to process: {len(groups)}", flush=True)
+    print(f"Data types: "
+          f"{'JWST ' if args.jwst else ''}"
+          f"{'HST ' if args.hst else ''}"
+          f"{'X-ray' if args.xray else ''}", flush=True)
 
-    print(f"Cutting {len(groups)} groups → {args.output}", flush=True)
     t0 = time.time()
     ok = err = 0
     for g in groups:
-        size = args.size if args.size else g["size"]
+        gid   = g["id"]
+        ra_o, dec_o = g["ra"],    g["dec"]       # optical centre
+        ra_x, dec_x = g["ra_xray"], g["dec_xray"] # X-ray peak
+        size  = args.size or g["size"]
+        out_dir = args.output / str(gid)
+        coord   = SkyCoord(ra=ra_o * u.deg, dec=dec_o * u.deg)
+        tile    = find_tile(coord)
+
+        print(f"\n[{gid}] RA={ra_o:.5f} Dec={dec_o:.5f}  tile={tile}  size={size:.0f}\"", flush=True)
+
+        n = 0
         try:
-            if process_group(g["id"], g["ra"], g["dec"], size,
-                             args.output, args.res, args.overwrite):
-                ok += 1
-            else:
-                err += 1
+            if args.jwst:
+                n += cut_jwst(gid, ra_o, dec_o, size, tile, out_dir, args.res, args.overwrite)
+            if args.hst:
+                n += cut_hst(gid, ra_o, dec_o, size, tile, out_dir, args.res, args.overwrite)
+            if args.xray:
+                # X-ray can be centred on optical or X-ray peak
+                cx = ra_x if args.xray_centre == "xray" else ra_o
+                cy = dec_x if args.xray_centre == "xray" else dec_o
+                n += cut_xray(gid, cx, cy, size, out_dir, args.overwrite)
+            ok += 1 if n > 0 else 0
+            err += 1 if n == 0 else 0
         except Exception as e:
-            print(f"  [{g['id']}] ERROR: {e}", flush=True)
+            print(f"  [{gid}] ERROR: {e}", flush=True)
             err += 1
 
-    print(f"\nDone — {ok} ok, {err} failed — {time.time()-t0:.0f}s", flush=True)
+    elapsed = time.time() - t0
+    print(f"\n{'─'*50}", flush=True)
+    print(f"Done — {ok} ok  {err} failed  {elapsed:.0f}s", flush=True)
+    print(f"{_cache.stats()}", flush=True)
 
 
 if __name__ == "__main__":
