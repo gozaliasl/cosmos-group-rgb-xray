@@ -1,0 +1,47 @@
+# Data files — never commit
+*.fits
+*.fit
+*.fts
+*.tif
+*.tiff
+*.pdf
+data/
+
+# Pipeline outputs
+outputs/
+*.png
+*.jpg
+*.jpeg
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Large catalogs (keep small CSVs, exclude full FITS catalogs)
+data/group-catalog/
+
+# Credentials / secrets
+.env

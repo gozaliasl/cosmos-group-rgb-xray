@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name            = "cosmos-rgb-xray"
+version         = "0.1.0"
+description     = "Publication-quality RGB + X-ray composites for COSMOS-Web galaxy groups"
+readme          = "README.md"
+requires-python = ">=3.10"
+license         = { text = "MIT" }
+authors         = [{ name = "Ghassem Gozaliasl", email = "ghassem.gozaliasl@gmail.com" }]
+dependencies    = [
+    "numpy>=1.24",
+    "astropy>=5.3",
+    "reproject>=0.13",
+    "scipy>=1.11",
+    "scikit-image>=0.21",
+    "Pillow>=10.0",
+]
+
+[project.scripts]
+cosmos-rgb-xray-batch  = "cosmos_rgb_xray.batch:main"
+cosmos-rgb-xray-single = "cosmos_rgb_xray.single:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cosmos_rgb_xray*"]

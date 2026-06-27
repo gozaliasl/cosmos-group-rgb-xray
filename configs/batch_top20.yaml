@@ -1,0 +1,9 @@
+# Batch pipeline — top-20% X-ray groups, both catalogs
+# Run with: python -m cosmos_rgb_xray.batch (see README)
+
+catalog:     catalogs/top20_cutout_combined.csv
+data_root:   data/group_inputs/   # JWST cutouts per group — see data layout in README
+output_dir:  outputs/
+jobs:        4
+overwrite:   false
+verbose:     true

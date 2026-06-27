@@ -1,0 +1,18 @@
+# Group 15 — pre-built TIFF workflow (ESA potm2504b equivalent)
+# Run with: python -m cosmos_rgb_xray.single (see README)
+
+group_id:    15
+ra:          150.395    # X-ray peak
+dec:         2.404
+redshift:    0.11
+
+# Paths relative to project root (or absolute)
+rgb_path:    data/rgb_inputs/group_15_rgb/jwst_hst_rgb_15.tiff
+wcs_path:    data/group_inputs/gg15/15_F814W_reprojected.fits
+xray_path:   data/group_inputs/gg15/15_large_scale.fits
+output_path: outputs/group15_rgb_xray.png
+
+# Stretch / overlay parameters (tuned for z=0.11, SNR=38)
+smooth_sigma: 80.0
+alpha:        0.88
+gamma:        0.55
