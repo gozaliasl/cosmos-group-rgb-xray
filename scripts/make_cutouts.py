@@ -78,6 +78,7 @@ DEFAULT_XRAY_DIR = Path("/n23data2/gozaliasl/xray_maps")
 JWST_FILTERS   = ["F115W", "F150W", "F277W", "F444W"]
 XRAY_LARGE_MAP = "cosmos_chaxmm14_noem_520.fits"    # diffuse / point-src removed
 XRAY_SMALL_MAP = "cosmos_chaxmm14_520_wv.3.fits"    # compact / wavelet scale-3
+# Override via --xray-large / --xray-small if filenames differ on your system
 
 
 # ── COSMOS-Web tile footprints ────────────────────────────────────────────────
@@ -279,17 +280,22 @@ def load_catalog(path: Path) -> List[dict]:
     with open(path, newline="") as f:
         for row in csv.DictReader(f):
             try:
-                gid  = int(float(row.get("group_id", row.get("ID", 0))))
-                ra   = float(row.get("RA",  row.get("RA_MODEL",  0)))
-                dec  = float(row.get("Dec", row.get("DEC_MODEL", 0)))
-                ra_x  = float(row.get("RA_xray_peak",  ra))
-                dec_x = float(row.get("Dec_xray_peak", dec))
-                z     = float(row.get("z", row.get("LP_zfinal", 0)) or 0)
-                # Use catalog value if present; otherwise compute from redshift
-                if row.get("cutout_arcsec", "").strip():
-                    size = float(row["cutout_arcsec"])
-                else:
-                    size = _cutout_arcsec(z)
+                # Accept multiple naming conventions
+                gid = int(float(
+                    row.get("Group_ID") or row.get("group_id") or
+                    row.get("ID") or 0))
+                ra  = float(
+                    row.get("RA") or row.get("RA_MODEL") or 0)
+                dec = float(
+                    row.get("DEC") or row.get("Dec") or
+                    row.get("DEC_MODEL") or 0)
+                ra_x  = float(row.get("RA_xray_peak")  or ra)
+                dec_x = float(row.get("Dec_xray_peak") or dec)
+                z     = float(
+                    row.get("Redshift") or row.get("z") or
+                    row.get("LP_zfinal") or 0)
+                val = row.get("cutout_arcsec", "").strip()
+                size = float(val) if val else _cutout_arcsec(z)
                 groups.append(dict(id=gid, ra=ra, dec=dec,
                                    ra_xray=ra_x, dec_xray=dec_x,
                                    z=z, size=size))
@@ -321,8 +327,12 @@ def main() -> None:
                     help=f"JWST NIRCam mosaic directory (default: {DEFAULT_JWST_DIR})")
     pa.add_argument("--hst-dir",   type=Path, default=DEFAULT_HST_DIR,
                     help=f"HST ACS mosaic directory   (default: {DEFAULT_HST_DIR})")
-    pa.add_argument("--xray-dir",  type=Path, default=DEFAULT_XRAY_DIR,
+    pa.add_argument("--xray-dir",   type=Path, default=DEFAULT_XRAY_DIR,
                     help=f"X-ray map directory        (default: {DEFAULT_XRAY_DIR})")
+    pa.add_argument("--xray-large", type=str, default=XRAY_LARGE_MAP,
+                    help=f"Filename of diffuse X-ray map  (default: {XRAY_LARGE_MAP})")
+    pa.add_argument("--xray-small", type=str, default=XRAY_SMALL_MAP,
+                    help=f"Filename of compact X-ray map  (default: {XRAY_SMALL_MAP})")
 
     # Options
     pa.add_argument("--ids",       nargs="*", type=int, default=None,
@@ -436,8 +446,8 @@ def main() -> None:
     if args.xray:
         print(f"\n{'═'*50}\n  X-ray (Chandra+XMM)\n{'═'*50}", flush=True)
         for map_name, label, suffix in [
-            (XRAY_LARGE_MAP, "large-scale (noem)", "large_scale"),
-            (XRAY_SMALL_MAP, "compact (wavelet)",  "small_scale"),
+            (args.xray_large, "large-scale (noem)", "large_scale"),
+            (args.xray_small, "compact (wavelet)",  "small_scale"),
         ]:
             xray_map = args.xray_dir / map_name
             entry = _cache.get(xray_map)
