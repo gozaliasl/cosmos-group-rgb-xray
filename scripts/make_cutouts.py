@@ -62,6 +62,10 @@ from astropy.io import fits
 from astropy.nddata import Cutout2D
 from astropy.wcs import WCS
 from shapely.geometry import Polygon
+
+# Support running as a script without pip install
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from cosmos_rgb_xray.cutout_size import cutout_arcsec as _cutout_arcsec
 
 warnings.filterwarnings("ignore", category=UserWarning, module="astropy")

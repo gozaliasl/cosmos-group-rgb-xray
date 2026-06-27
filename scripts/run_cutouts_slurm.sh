@@ -28,7 +28,9 @@ module load intelpython/3-2024.2.0
 REPO=/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray
 cd "$REPO"
 
-pip install -e . -q --no-build-isolation 2>/dev/null || true
+echo "Installing package..."
+pip install -e . -q 2>&1 | tail -3
+echo "Package installed."
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 CATALOG="$REPO/catalogs/top20_cutout_combined.csv"
