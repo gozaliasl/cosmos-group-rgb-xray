@@ -184,19 +184,36 @@ def process_group(
     output_dir.mkdir(parents=True, exist_ok=True)
     arr = np.clip(rgb_xray, 0, 1)
 
-    # PNG — 8-bit, web/screen
-    img8 = Image.fromarray((arr * 255).astype(np.uint8))
-    img8.save(out_png, dpi=(300, 300))
-    if verbose:
-        print(f"  [{group_id}] PNG  → {out_png}", flush=True)
+    # Resize to publication size if larger than MAX_PX on either axis
+    # A&A / ApJ accept 300 dpi at ~3.5" column width → ~1050 px sufficient
+    # We cap at 4000 px to keep files reasonable (<10 MB PNG, <25 MB TIFF)
+    MAX_PX = info.get("max_px", 4000)
+    h, w = arr.shape[:2]
+    if max(h, w) > MAX_PX:
+        scale  = MAX_PX / max(h, w)
+        new_w  = int(w * scale)
+        new_h  = int(h * scale)
+        img_rs = Image.fromarray((arr * 255).astype(np.uint8)).resize(
+            (new_w, new_h), Image.LANCZOS)
+        arr = np.asarray(img_rs, dtype=np.float32) / 255.0
+        if verbose:
+            print(f"  [{group_id}] resized {w}×{h} → {new_w}×{new_h}", flush=True)
 
-    # TIFF — 16-bit, publication / print quality
+    # PNG — 8-bit, web/screen/journal submission
+    img8 = Image.fromarray((arr * 255).astype(np.uint8))
+    img8.save(out_png, dpi=(300, 300), optimize=True)
+    if verbose:
+        sz = out_png.stat().st_size / 1e6
+        print(f"  [{group_id}] PNG  → {out_png}  ({sz:.1f} MB)", flush=True)
+
+    # TIFF — 16-bit LZW, publication / print quality
     if save_tiff:
         out_tiff = output_dir / f"group_{group_id:05d}_rgb_xray.tiff"
         img16 = Image.fromarray((arr * 65535).astype(np.uint16))
         img16.save(out_tiff, compression="tiff_lzw", dpi=(300, 300))
         if verbose:
-            print(f"  [{group_id}] TIFF → {out_tiff}", flush=True)
+            sz = out_tiff.stat().st_size / 1e6
+            print(f"  [{group_id}] TIFF → {out_tiff}  ({sz:.1f} MB)", flush=True)
 
     return True
 
@@ -215,6 +232,7 @@ def run_batch(
     verbose: bool = False,
     rgb_method: str = "asinh",
     save_tiff: bool = False,
+    max_px: int = 4000,
 ) -> None:
     groups = load_catalog(catalog)
     if group_ids:
@@ -222,6 +240,10 @@ def run_batch(
 
     print(f"Processing {len(groups)} groups from {catalog.name}", flush=True)
     print(f"RGB method : {rgb_method}", flush=True)
+
+    # Inject max_px into each group info dict for process_group
+    for info in groups.values():
+        info["max_px"] = max_px
 
     if jobs == 1:
         for gid, info in groups.items():
@@ -262,6 +284,9 @@ def main() -> None:
                    help="RGB stretching method: asinh+CLAHE (default) or STIFF (Bertin)")
     p.add_argument("--tiff", action="store_true", dest="save_tiff",
                    help="Also save 16-bit LZW-compressed TIFF alongside PNG")
+    p.add_argument("--max-px", type=int, default=4000,
+                   help="Maximum pixel dimension of output images (default: 4000). "
+                        "Larger images are downsampled with Lanczos.")
     args = p.parse_args()
 
     run_batch(
@@ -272,6 +297,7 @@ def main() -> None:
         jobs=args.jobs,
         rgb_method=args.rgb_method,
         save_tiff=args.save_tiff,
+        max_px=args.max_px,
         overwrite=args.overwrite,
         verbose=args.verbose,
     )
