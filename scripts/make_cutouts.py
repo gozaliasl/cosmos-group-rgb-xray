@@ -13,8 +13,8 @@ Input catalog CSV must contain:
   group_id, RA, Dec
   Optional: RA_xray_peak, Dec_xray_peak, cutout_arcsec
 
-Output layout (one sub-directory per group):
-  <output>/<group_id>/
+Output layout — per catalog sample, then per group:
+  <output>/<Catalog>/<group_id>/
       <group_id>_F115W.fits       JWST
       <group_id>_F150W.fits
       <group_id>_F277W.fits
@@ -22,6 +22,10 @@ Output layout (one sub-directory per group):
       <group_id>_F814W.fits       HST
       <group_id>_large_scale.fits X-ray diffuse
       <group_id>_small_scale.fits X-ray compact
+
+  <Catalog> comes from the "Catalog" column in the CSV
+  (e.g. "CW-All" for all COSMOS-Web groups, "CW-HCG" for Hickson compact groups).
+  Groups from different samples never collide even if IDs overlap.
 
 Examples
 --------
@@ -295,9 +299,12 @@ def load_catalog(path: Path) -> List[dict]:
                     row.get("LP_zfinal") or 0)
                 val = row.get("cutout_arcsec", "").strip()
                 size = float(val) if val else _cutout_arcsec(z)
+                # Catalog name used as output subfolder (CW-All / CW-HCG)
+                cat = (row.get("Catalog") or row.get("catalog") or "unknown").strip()
+                cat = cat.replace(" ", "_")
                 groups.append(dict(id=gid, ra=ra, dec=dec,
                                    ra_xray=ra_x, dec_xray=dec_x,
-                                   z=z, size=size))
+                                   z=z, size=size, catalog=cat))
             except (ValueError, KeyError):
                 continue
     return groups
@@ -374,12 +381,13 @@ def main() -> None:
     if args.jwst:  print(f"JWST dir   : {args.jwst_dir}", flush=True)
     if args.hst:   print(f"HST dir    : {args.hst_dir}",  flush=True)
     if args.xray:  print(f"X-ray dir  : {args.xray_dir}", flush=True)
-    print(f"Output     : {args.output}  (created automatically)", flush=True)
+    print(f"Output     : {args.output}/<catalog>/<group_id>/  (created automatically)", flush=True)
 
     # ── Pre-compute per-group metadata ────────────────────────────────────────
     for g in groups:
         coord = SkyCoord(ra=g["ra"] * u.deg, dec=g["dec"] * u.deg)
-        g["tile"] = find_tile(coord)
+        g["tile"]    = find_tile(coord)
+        g["out_dir"] = args.output / g["catalog"] / str(g["id"])
         if args.size:
             g["size"] = args.size
         elif args.radius:
@@ -412,7 +420,7 @@ def main() -> None:
                     continue
                 print(f"  {filt}", flush=True)
                 for g in tile_groups:
-                    out = args.output / str(g["id"]) / f"{g['id']}_{filt}.fits"
+                    out = g["out_dir"] / f"{g['id']}_{filt}.fits"
                     if out.exists() and not args.overwrite:
                         print(f"    [{g['id']}] exists — skip", flush=True)
                         results[g["id"]] += 1
@@ -432,7 +440,7 @@ def main() -> None:
                 print(f"  F814W — mosaic not found, skipping", flush=True)
                 continue
             for g in tile_groups:
-                out = args.output / str(g["id"]) / f"{g['id']}_F814W.fits"
+                out = g["out_dir"] / f"{g['id']}_F814W.fits"
                 if out.exists() and not args.overwrite:
                     print(f"    [{g['id']}] exists — skip", flush=True)
                     results[g["id"]] += 1
@@ -455,7 +463,7 @@ def main() -> None:
                 continue
             print(f"\n  {label}  ({map_name})", flush=True)
             for g in groups:
-                out = args.output / str(g["id"]) / f"{g['id']}_{suffix}.fits"
+                out = g["out_dir"] / f"{g['id']}_{suffix}.fits"
                 if out.exists() and not args.overwrite:
                     print(f"    [{g['id']}] exists — skip", flush=True)
                     results[g["id"]] += 1
