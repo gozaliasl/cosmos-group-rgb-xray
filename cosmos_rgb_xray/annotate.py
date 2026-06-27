@@ -50,7 +50,7 @@ def annotate_and_save(
     save_tiff: bool = False,
     max_px: int = 4000,
     dpi: int = 300,
-    fontsize: int = 14,
+    fontsize: int = 17,
     tick_color: str = "white",
     scalebar_color: str = "white",
     margin_color: str = "white",   # background outside the image axes
