@@ -76,9 +76,7 @@ DEFAULT_HST_DIR  = Path("/n17data/shuntov/COSMOS-Web/Images_HST-ACS/Jan24Tiles")
 DEFAULT_XRAY_DIR = Path("/n23data2/gozaliasl/xray_maps")
 
 JWST_FILTERS   = ["F115W", "F150W", "F277W", "F444W"]
-XRAY_LARGE_MAP = "cosmos_chaxmm14_noem_520.fits"    # diffuse / point-src removed
-XRAY_SMALL_MAP = "cosmos_chaxmm14_520_wv.3.fits"    # compact / wavelet scale-3
-# Override via --xray-large / --xray-small if filenames differ on your system
+XRAY_MAP = "cosmos_chaxmm14_520_wv.3.fits"    # Chandra+XMM wavelet map
 
 
 # ── COSMOS-Web tile footprints ────────────────────────────────────────────────
@@ -329,10 +327,8 @@ def main() -> None:
                     help=f"HST ACS mosaic directory   (default: {DEFAULT_HST_DIR})")
     pa.add_argument("--xray-dir",   type=Path, default=DEFAULT_XRAY_DIR,
                     help=f"X-ray map directory        (default: {DEFAULT_XRAY_DIR})")
-    pa.add_argument("--xray-large", type=str, default=XRAY_LARGE_MAP,
-                    help=f"Filename of diffuse X-ray map  (default: {XRAY_LARGE_MAP})")
-    pa.add_argument("--xray-small", type=str, default=XRAY_SMALL_MAP,
-                    help=f"Filename of compact X-ray map  (default: {XRAY_SMALL_MAP})")
+    pa.add_argument("--xray-map", type=str, default=XRAY_MAP,
+                    help=f"X-ray map filename (default: {XRAY_MAP})")
 
     # Options
     pa.add_argument("--ids",       nargs="*", type=int, default=None,
@@ -445,18 +441,14 @@ def main() -> None:
     # ── X-ray: full-survey maps, no tile needed — cut all groups ─────────────
     if args.xray:
         print(f"\n{'═'*50}\n  X-ray (Chandra+XMM)\n{'═'*50}", flush=True)
-        for map_name, label, suffix in [
-            (args.xray_large, "large-scale (noem)", "large_scale"),
-            (args.xray_small, "compact (wavelet)",  "small_scale"),
-        ]:
-            xray_map = args.xray_dir / map_name
-            entry = _cache.get(xray_map)
-            if entry is None:
-                print(f"  {label} — map not found, skipping", flush=True)
-                continue
-            print(f"\n  {label}", flush=True)
+        xray_map = args.xray_dir / args.xray_map
+        entry = _cache.get(xray_map)
+        if entry is None:
+            print(f"  X-ray map not found: {xray_map}", flush=True)
+        else:
+            print(f"\n  {args.xray_map}", flush=True)
             for g in groups:
-                out = args.output / str(g["id"]) / f"{g['id']}_{suffix}.fits"
+                out = args.output / str(g["id"]) / f"{g['id']}_xray.fits"
                 if out.exists() and not args.overwrite:
                     print(f"    [{g['id']}] exists — skip", flush=True)
                     results[g["id"]] += 1
@@ -464,7 +456,7 @@ def main() -> None:
                 cx = g["ra_xray"]  if args.xray_centre == "xray" else g["ra"]
                 cy = g["dec_xray"] if args.xray_centre == "xray" else g["dec"]
                 if cut_and_save(xray_map, cx, cy, g["size"] * 1.5,
-                                out, f"[{g['id']}] {suffix}"):
+                                out, f"[{g['id']}] xray"):
                     results[g["id"]] += 1
 
     # ── Summary ───────────────────────────────────────────────────────────────
