@@ -62,6 +62,7 @@ from astropy.io import fits
 from astropy.nddata import Cutout2D
 from astropy.wcs import WCS
 from shapely.geometry import Polygon
+from cosmos_rgb_xray.cutout_size import cutout_arcsec as _cutout_arcsec
 
 warnings.filterwarnings("ignore", category=UserWarning, module="astropy")
 
@@ -277,12 +278,17 @@ def load_catalog(path: Path) -> List[dict]:
                 gid  = int(float(row.get("group_id", row.get("ID", 0))))
                 ra   = float(row.get("RA",  row.get("RA_MODEL",  0)))
                 dec  = float(row.get("Dec", row.get("DEC_MODEL", 0)))
-                # X-ray peak preferred as cutout centre
                 ra_x  = float(row.get("RA_xray_peak",  ra))
                 dec_x = float(row.get("Dec_xray_peak", dec))
-                size  = float(row.get("cutout_arcsec", 240.0))
+                z     = float(row.get("z", row.get("LP_zfinal", 0)) or 0)
+                # Use catalog value if present; otherwise compute from redshift
+                if row.get("cutout_arcsec", "").strip():
+                    size = float(row["cutout_arcsec"])
+                else:
+                    size = _cutout_arcsec(z)
                 groups.append(dict(id=gid, ra=ra, dec=dec,
-                                   ra_xray=ra_x, dec_xray=dec_x, size=size))
+                                   ra_xray=ra_x, dec_xray=dec_x,
+                                   z=z, size=size))
             except (ValueError, KeyError):
                 continue
     return groups
@@ -318,7 +324,10 @@ def main() -> None:
     pa.add_argument("--ids",       nargs="*", type=int, default=None,
                     help="Process only these group IDs (default: all)")
     pa.add_argument("--size",      type=float, default=None,
-                    help="Override cutout size [arcsec] for all groups")
+                    help="Override cutout size [arcsec] for all groups (ignores redshift)")
+    pa.add_argument("--radius",    type=float, default=None,
+                    help="Physical aperture radius [Mpc] to compute size from redshift "
+                         "(default: 1.5 Mpc); ignored if --size is given")
     pa.add_argument("--res",       type=int,   default=30,
                     help="JWST/HST pixel scale in mas (default: 30)")
     pa.add_argument("--overwrite", action="store_true",
@@ -356,7 +365,12 @@ def main() -> None:
         gid   = g["id"]
         ra_o, dec_o = g["ra"],    g["dec"]       # optical centre
         ra_x, dec_x = g["ra_xray"], g["dec_xray"] # X-ray peak
-        size  = args.size or g["size"]
+        if args.size:
+            size = args.size
+        elif args.radius:
+            size = _cutout_arcsec(g.get("z", 0), r_mpc=args.radius)
+        else:
+            size = g["size"]
         out_dir = args.output / str(gid)
         coord   = SkyCoord(ra=ra_o * u.deg, dec=dec_o * u.deg)
         tile    = find_tile(coord)
