@@ -123,6 +123,7 @@ def process_group(
     overwrite: bool = False,
     verbose: bool = False,
     rgb_method: str = "asinh",   # "asinh" | "stiff"
+    save_tiff: bool = False,     # also save 16-bit TIFF
 ) -> bool:
     """
     Build RGB + X-ray composite for one group. Returns True on success.
@@ -181,10 +182,22 @@ def process_group(
 
     # Save
     output_dir.mkdir(parents=True, exist_ok=True)
-    img = Image.fromarray((np.clip(rgb_xray, 0, 1) * 255).astype(np.uint8))
-    img.save(out_png, dpi=(300, 300))
+    arr = np.clip(rgb_xray, 0, 1)
+
+    # PNG — 8-bit, web/screen
+    img8 = Image.fromarray((arr * 255).astype(np.uint8))
+    img8.save(out_png, dpi=(300, 300))
     if verbose:
-        print(f"  [{group_id}] saved → {out_png}", flush=True)
+        print(f"  [{group_id}] PNG  → {out_png}", flush=True)
+
+    # TIFF — 16-bit, publication / print quality
+    if save_tiff:
+        out_tiff = output_dir / f"group_{group_id:05d}_rgb_xray.tiff"
+        img16 = Image.fromarray((arr * 65535).astype(np.uint16))
+        img16.save(out_tiff, compression="tiff_lzw", dpi=(300, 300))
+        if verbose:
+            print(f"  [{group_id}] TIFF → {out_tiff}", flush=True)
+
     return True
 
 
@@ -201,6 +214,7 @@ def run_batch(
     overwrite: bool = False,
     verbose: bool = False,
     rgb_method: str = "asinh",
+    save_tiff: bool = False,
 ) -> None:
     groups = load_catalog(catalog)
     if group_ids:
@@ -212,12 +226,12 @@ def run_batch(
     if jobs == 1:
         for gid, info in groups.items():
             process_group(gid, info, data_root, output_dir,
-                          overwrite, verbose, rgb_method)
+                          overwrite, verbose, rgb_method, save_tiff)
     else:
         with ProcessPoolExecutor(max_workers=jobs) as ex:
             futures = {
                 ex.submit(process_group, gid, info, data_root, output_dir,
-                          overwrite, verbose, rgb_method): gid
+                          overwrite, verbose, rgb_method, save_tiff): gid
                 for gid, info in groups.items()
             }
             for fut in as_completed(futures):
@@ -246,6 +260,8 @@ def main() -> None:
     p.add_argument("--verbose",    action="store_true")
     p.add_argument("--rgb-method", choices=["asinh", "stiff"], default="asinh",
                    help="RGB stretching method: asinh+CLAHE (default) or STIFF (Bertin)")
+    p.add_argument("--tiff", action="store_true", dest="save_tiff",
+                   help="Also save 16-bit LZW-compressed TIFF alongside PNG")
     args = p.parse_args()
 
     run_batch(
@@ -255,6 +271,7 @@ def main() -> None:
         group_ids=args.ids,
         jobs=args.jobs,
         rgb_method=args.rgb_method,
+        save_tiff=args.save_tiff,
         overwrite=args.overwrite,
         verbose=args.verbose,
     )

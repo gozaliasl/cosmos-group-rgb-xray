@@ -71,9 +71,18 @@ def run_single(
     )
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    out_img = Image.fromarray((np.clip(rgb_xray, 0, 1) * 255).astype(np.uint8))
-    out_img.save(output_path, dpi=(300, 300))
-    print(f"Saved → {output_path}", flush=True)
+    arr = np.clip(rgb_xray, 0, 1)
+
+    # PNG (8-bit)
+    Image.fromarray((arr * 255).astype(np.uint8)).save(
+        output_path, dpi=(300, 300))
+    print(f"PNG  → {output_path}", flush=True)
+
+    # TIFF (16-bit) — same stem, .tiff extension
+    tiff_path = output_path.with_suffix(".tiff")
+    Image.fromarray((arr * 65535).astype(np.uint16)).save(
+        tiff_path, compression="tiff_lzw", dpi=(300, 300))
+    print(f"TIFF → {tiff_path}", flush=True)
 
 
 def main() -> None:
