@@ -37,6 +37,9 @@ shift || true   # consume mode arg (may not be set)
 
 CATALOG="$REPO_ROOT/catalogs/top20_cutout_combined.csv"
 OUTPUT="/n23data2/gozaliasl/groups_cutout/group_inputs"
+JWST_DIR="/n23data2/cosmosweb/COSMOS-Web_Jan24/NIRCam/v0.8"
+HST_DIR="/n17data/shuntov/COSMOS-Web/Images_HST-ACS/Jan24Tiles"
+XRAY_DIR="/n23data2/gozaliasl/xray_maps"
 SIZE=""
 RES="30"
 IDS=""
@@ -45,11 +48,14 @@ OVERWRITE=""
 # ── Parse options ─────────────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --catalog)   CATALOG="$2";    shift 2 ;;
-        --output)    OUTPUT="$2";     shift 2 ;;
-        --size)      SIZE="$2";       shift 2 ;;
-        --res)       RES="$2";        shift 2 ;;
-        --ids)       IDS="$2";        shift 2 ;;
+        --catalog)   CATALOG="$2";   shift 2 ;;
+        --output)    OUTPUT="$2";    shift 2 ;;
+        --jwst-dir)  JWST_DIR="$2";  shift 2 ;;
+        --hst-dir)   HST_DIR="$2";   shift 2 ;;
+        --xray-dir)  XRAY_DIR="$2";  shift 2 ;;
+        --size)      SIZE="$2";      shift 2 ;;
+        --res)       RES="$2";       shift 2 ;;
+        --ids)       IDS="$2";       shift 2 ;;
         --overwrite) OVERWRITE="--overwrite"; shift ;;
         *) echo "Unknown option: $1"; exit 1 ;;
     esac
@@ -81,15 +87,21 @@ echo "=============================================="
 echo "  COSMOS-Web group cutout pipeline"
 echo "  Mode     : $MODE"
 echo "  Catalog  : $CATALOG"
-echo "  Output   : $OUTPUT"
+echo "  Output   : $OUTPUT  (auto-created)"
+echo "  JWST dir : $JWST_DIR"
+echo "  HST dir  : $HST_DIR"
+echo "  X-ray dir: $XRAY_DIR"
 echo "  Log      : $LOGFILE"
 echo "=============================================="
 
 # ── Run ───────────────────────────────────────────────────────────────────────
 python "$SCRIPT_DIR/make_cutouts.py" \
     $FLAGS \
-    --catalog "$CATALOG" \
-    --output  "$OUTPUT" \
+    --catalog  "$CATALOG" \
+    --output   "$OUTPUT"  \
+    --jwst-dir "$JWST_DIR" \
+    --hst-dir  "$HST_DIR"  \
+    --xray-dir "$XRAY_DIR" \
     2>&1 | tee "$LOGFILE"
 
 echo ""

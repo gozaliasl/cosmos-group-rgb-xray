@@ -65,10 +65,10 @@ from shapely.geometry import Polygon
 
 warnings.filterwarnings("ignore", category=UserWarning, module="astropy")
 
-# ── Mosaic paths (Candide) ────────────────────────────────────────────────────
-JWST_BASE = Path("/n23data2/cosmosweb/COSMOS-Web_Jan24/NIRCam/v0.8")
-HST_BASE  = Path("/n17data/shuntov/COSMOS-Web/Images_HST-ACS/Jan24Tiles")
-XRAY_BASE = Path("/n23data2/gozaliasl/xray_maps")   # update if different
+# ── Default mosaic paths (Candide) — all overridable via CLI ─────────────────
+DEFAULT_JWST_DIR = Path("/n23data2/cosmosweb/COSMOS-Web_Jan24/NIRCam/v0.8")
+DEFAULT_HST_DIR  = Path("/n17data/shuntov/COSMOS-Web/Images_HST-ACS/Jan24Tiles")
+DEFAULT_XRAY_DIR = Path("/n23data2/gozaliasl/xray_maps")
 
 JWST_FILTERS   = ["F115W", "F150W", "F277W", "F444W"]
 XRAY_LARGE_MAP = "cosmos_chaxmm14_noem_520.fits"    # diffuse / point-src removed
@@ -116,14 +116,16 @@ def find_tile(coord: SkyCoord) -> str:
 
 # ── Mosaic paths ──────────────────────────────────────────────────────────────
 
-def jwst_mosaic_path(filter_name: str, tile: str, res: int = 30) -> Path:
-    return JWST_BASE / (
+def jwst_mosaic_path(filter_name: str, tile: str, res: int = 30,
+                     jwst_dir: Path = DEFAULT_JWST_DIR) -> Path:
+    return jwst_dir / (
         f"mosaic_nircam_{filter_name.lower()}_COSMOS-Web_{res}mas_{tile}_v1.0_i2d.fits.gz"
     )
 
 
-def hst_mosaic_path(tile: str, res: int = 30) -> Path:
-    return HST_BASE / (
+def hst_mosaic_path(tile: str, res: int = 30,
+                    hst_dir: Path = DEFAULT_HST_DIR) -> Path:
+    return hst_dir / (
         f"mosaic_cosmos_web_2024jan_{res}mas_tile_{tile}_hst_acs_wfc_f814w_drz_zp-28.09.fits"
     )
 
@@ -221,37 +223,46 @@ def cut_and_save(
 # ── Per-instrument cutout helpers ─────────────────────────────────────────────
 
 def cut_jwst(group_id: int, ra: float, dec: float, size: float,
-             tile: str, out_dir: Path, res: int, overwrite: bool) -> int:
+             tile: str, out_dir: Path, res: int, overwrite: bool,
+             jwst_dir: Path = DEFAULT_JWST_DIR) -> int:
     n = 0
     for filt in JWST_FILTERS:
         out = out_dir / f"{group_id}_{filt}.fits"
         if out.exists() and not overwrite:
             print(f"  {filt:12s} exists — skip", flush=True); n += 1; continue
-        if cut_and_save(jwst_mosaic_path(filt, tile, res), ra, dec, size, out, filt):
+        if cut_and_save(jwst_mosaic_path(filt, tile, res, jwst_dir),
+                        ra, dec, size, out, filt):
             n += 1
     return n
 
 
 def cut_hst(group_id: int, ra: float, dec: float, size: float,
-            tile: str, out_dir: Path, res: int, overwrite: bool) -> int:
+            tile: str, out_dir: Path, res: int, overwrite: bool,
+            hst_dir: Path = DEFAULT_HST_DIR) -> int:
     out = out_dir / f"{group_id}_F814W.fits"
     if out.exists() and not overwrite:
         print(f"  F814W        exists — skip", flush=True); return 1
-    return 1 if cut_and_save(hst_mosaic_path(tile, res), ra, dec, size, out, "F814W") else 0
+    return 1 if cut_and_save(hst_mosaic_path(tile, res, hst_dir),
+                              ra, dec, size, out, "F814W") else 0
 
 
 def cut_xray(group_id: int, ra: float, dec: float, size: float,
-             out_dir: Path, overwrite: bool) -> int:
+             out_dir: Path, overwrite: bool,
+             xray_dir: Path = DEFAULT_XRAY_DIR) -> int:
     n = 0
     for map_name, label, out_suffix in [
         (XRAY_LARGE_MAP, "xray-large", "large_scale"),
         (XRAY_SMALL_MAP, "xray-small", "small_scale"),
     ]:
+        xray_map = xray_dir / map_name
+        if not xray_map.exists():
+            print(f"  {label:12s} map not found: {xray_map}", flush=True)
+            continue
         out = out_dir / f"{group_id}_{out_suffix}.fits"
         if out.exists() and not overwrite:
             print(f"  {label:12s} exists — skip", flush=True); n += 1; continue
         # X-ray maps are full-survey: cut a generous radius (1.5× requested)
-        if cut_and_save(XRAY_BASE / map_name, ra, dec, size * 1.5, out, label):
+        if cut_and_save(xray_map, ra, dec, size * 1.5, out, label):
             n += 1
     return n
 
@@ -291,8 +302,17 @@ def main() -> None:
     pa.add_argument("--xray",  action="store_true", help="Cut Chandra/XMM X-ray maps (large + compact)")
 
     # Input / output
-    pa.add_argument("--catalog",   required=True, type=Path, help="Group catalog CSV")
-    pa.add_argument("--output",    required=True, type=Path, help="Root output directory")
+    pa.add_argument("--catalog",   required=True,  type=Path, help="Group catalog CSV")
+    pa.add_argument("--output",    required=True,  type=Path,
+                    help="Root output dir — created automatically if missing")
+
+    # Mosaic directories (defaults to Candide paths)
+    pa.add_argument("--jwst-dir",  type=Path, default=DEFAULT_JWST_DIR,
+                    help=f"JWST NIRCam mosaic directory (default: {DEFAULT_JWST_DIR})")
+    pa.add_argument("--hst-dir",   type=Path, default=DEFAULT_HST_DIR,
+                    help=f"HST ACS mosaic directory   (default: {DEFAULT_HST_DIR})")
+    pa.add_argument("--xray-dir",  type=Path, default=DEFAULT_XRAY_DIR,
+                    help=f"X-ray map directory        (default: {DEFAULT_XRAY_DIR})")
 
     # Options
     pa.add_argument("--ids",       nargs="*", type=int, default=None,
@@ -310,14 +330,25 @@ def main() -> None:
     if not (args.jwst or args.hst or args.xray):
         pa.error("Specify at least one of --jwst, --hst, --xray")
 
+    # Output root is created automatically — no manual mkdir needed
+    args.output.mkdir(parents=True, exist_ok=True)
+
     groups = load_catalog(args.catalog)
     if args.ids:
         groups = [g for g in groups if g["id"] in args.ids]
-    print(f"Groups to process: {len(groups)}", flush=True)
-    print(f"Data types: "
+
+    print(f"Groups     : {len(groups)}", flush=True)
+    print(f"Data types : "
           f"{'JWST ' if args.jwst else ''}"
-          f"{'HST ' if args.hst else ''}"
+          f"{'HST '  if args.hst  else ''}"
           f"{'X-ray' if args.xray else ''}", flush=True)
+    if args.jwst:
+        print(f"JWST dir   : {args.jwst_dir}", flush=True)
+    if args.hst:
+        print(f"HST dir    : {args.hst_dir}",  flush=True)
+    if args.xray:
+        print(f"X-ray dir  : {args.xray_dir}", flush=True)
+    print(f"Output     : {args.output}  (created automatically)", flush=True)
 
     t0 = time.time()
     ok = err = 0
@@ -335,14 +366,16 @@ def main() -> None:
         n = 0
         try:
             if args.jwst:
-                n += cut_jwst(gid, ra_o, dec_o, size, tile, out_dir, args.res, args.overwrite)
+                n += cut_jwst(gid, ra_o, dec_o, size, tile, out_dir,
+                              args.res, args.overwrite, args.jwst_dir)
             if args.hst:
-                n += cut_hst(gid, ra_o, dec_o, size, tile, out_dir, args.res, args.overwrite)
+                n += cut_hst(gid, ra_o, dec_o, size, tile, out_dir,
+                             args.res, args.overwrite, args.hst_dir)
             if args.xray:
-                # X-ray can be centred on optical or X-ray peak
                 cx = ra_x if args.xray_centre == "xray" else ra_o
                 cy = dec_x if args.xray_centre == "xray" else dec_o
-                n += cut_xray(gid, cx, cy, size, out_dir, args.overwrite)
+                n += cut_xray(gid, cx, cy, size, out_dir,
+                              args.overwrite, args.xray_dir)
             ok += 1 if n > 0 else 0
             err += 1 if n == 0 else 0
         except Exception as e:
