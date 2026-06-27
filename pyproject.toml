@@ -7,7 +7,7 @@ name            = "cosmos-rgb-xray"
 version         = "0.1.0"
 description     = "Publication-quality RGB + X-ray composites for COSMOS-Web galaxy groups"
 readme          = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.8"
 license         = { text = "MIT" }
 authors         = [{ name = "Ghassem Gozaliasl", email = "ghassem.gozaliasl@gmail.com" }]
 dependencies    = [
