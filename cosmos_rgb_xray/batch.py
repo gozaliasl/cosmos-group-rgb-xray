@@ -122,6 +122,7 @@ def process_group(
     output_dir: Path,
     overwrite: bool = False,
     verbose: bool = False,
+    rgb_method: str = "asinh",   # "asinh" | "stiff"
 ) -> bool:
     """
     Build RGB + X-ray composite for one group. Returns True on success.
@@ -151,9 +152,15 @@ def process_group(
     cutout_arcsec = info.get("cutout_arcsec", 240.0)
 
     # Build RGB
-    rgb, ref_hdr = build_rgb(group_dir, group_id, verbose=verbose)
+    if rgb_method == "stiff":
+        from .stiff import build_rgb_stiff
+        rgb, ref_hdr = build_rgb_stiff(group_dir, group_id,
+                                       output_dir=output_dir, verbose=verbose)
+    else:
+        rgb, ref_hdr = build_rgb(group_dir, group_id, verbose=verbose)
+
     if rgb is None:
-        print(f"  [{group_id}] SKIP — missing JWST bands", file=sys.stderr)
+        print(f"  [{group_id}] SKIP — RGB build failed", file=sys.stderr)
         return False
 
     # X-ray parameters
@@ -193,20 +200,24 @@ def run_batch(
     jobs: int = 1,
     overwrite: bool = False,
     verbose: bool = False,
+    rgb_method: str = "asinh",
 ) -> None:
     groups = load_catalog(catalog)
     if group_ids:
         groups = {k: v for k, v in groups.items() if k in group_ids}
 
     print(f"Processing {len(groups)} groups from {catalog.name}", flush=True)
+    print(f"RGB method : {rgb_method}", flush=True)
 
     if jobs == 1:
         for gid, info in groups.items():
-            process_group(gid, info, data_root, output_dir, overwrite, verbose)
+            process_group(gid, info, data_root, output_dir,
+                          overwrite, verbose, rgb_method)
     else:
         with ProcessPoolExecutor(max_workers=jobs) as ex:
             futures = {
-                ex.submit(process_group, gid, info, data_root, output_dir, overwrite, verbose): gid
+                ex.submit(process_group, gid, info, data_root, output_dir,
+                          overwrite, verbose, rgb_method): gid
                 for gid, info in groups.items()
             }
             for fut in as_completed(futures):
@@ -233,6 +244,8 @@ def main() -> None:
     p.add_argument("--jobs",       type=int, default=1)
     p.add_argument("--overwrite",  action="store_true")
     p.add_argument("--verbose",    action="store_true")
+    p.add_argument("--rgb-method", choices=["asinh", "stiff"], default="asinh",
+                   help="RGB stretching method: asinh+CLAHE (default) or STIFF (Bertin)")
     args = p.parse_args()
 
     run_batch(
@@ -241,6 +254,7 @@ def main() -> None:
         output_dir=args.output_dir,
         group_ids=args.ids,
         jobs=args.jobs,
+        rgb_method=args.rgb_method,
         overwrite=args.overwrite,
         verbose=args.verbose,
     )
