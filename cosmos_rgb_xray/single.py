@@ -40,6 +40,7 @@ def run_single(
     gamma: float = 0.55,
     pmin: float = 30.0,
     pmax: float = 99.5,
+    annotate: bool = False,
     verbose: bool = False,
 ) -> None:
     from typing import Optional
@@ -70,19 +71,17 @@ def run_single(
         verbose=verbose,
     )
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
     arr = np.clip(rgb_xray, 0, 1)
-
-    # PNG (8-bit)
-    Image.fromarray((arr * 255).astype(np.uint8)).save(
-        output_path, dpi=(300, 300))
-    print(f"PNG  → {output_path}", flush=True)
-
-    # TIFF (16-bit) — same stem, .tiff extension
-    tiff_path = output_path.with_suffix(".tiff")
-    Image.fromarray((arr * 65535).astype(np.uint16)).save(
-        tiff_path, compression="tiff_lzw", dpi=(300, 300))
-    print(f"TIFF → {tiff_path}", flush=True)
+    if annotate:
+        from .annotate import annotate_and_save
+        annotate_and_save(arr, ref_hdr, output_path,
+                          redshift=redshift, scale_kpc=500.0,
+                          save_tiff=True, verbose=verbose)
+    else:
+        from PIL import Image as _PIL
+        _PIL.fromarray((arr * 255).astype(np.uint8)).save(
+            output_path, dpi=(300, 300))
+        print(f"PNG  → {output_path}", flush=True)
 
 
 def main() -> None:
@@ -97,6 +96,8 @@ def main() -> None:
     p.add_argument("--smooth",    type=float, default=80.0,  dest="smooth_sigma")
     p.add_argument("--alpha",     type=float, default=0.88)
     p.add_argument("--gamma",     type=float, default=0.55)
+    p.add_argument("--annotate",  action="store_true",
+                   help="Add RA/Dec axes and scale bar (for paper figures)")
     p.add_argument("--verbose",   action="store_true")
     args = p.parse_args()
 
@@ -111,6 +112,7 @@ def main() -> None:
         smooth_sigma=args.smooth_sigma,
         alpha=args.alpha,
         gamma=args.gamma,
+        annotate=args.annotate,
         verbose=args.verbose,
     )
 
