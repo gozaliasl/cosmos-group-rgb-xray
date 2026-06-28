@@ -36,7 +36,7 @@ from typing import Optional, Tuple
 import numpy as np
 from astropy.io import fits
 from astropy.wcs import WCS
-from scipy.ndimage import gaussian_filter, label
+from scipy.ndimage import gaussian_filter, label, binary_erosion
 import matplotlib.colors as mcolors
 
 from .io_fits import cutout_from_map, load_fits, reproject_to, wcs_covers
@@ -117,6 +117,66 @@ def find_per_group_xray(
     return None
 
 
+def optical_coverage_mask(rgb: np.ndarray, erode_px: int = 8) -> np.ndarray:
+    """
+    Binary mask of pixels where the optical image has real data.
+
+    The sky floor added by build_rgb_fits is 0.002 per channel, so pixels
+    with no JWST coverage remain at or very near that floor.  Threshold at
+    0.004 (max across channels) to detect genuine data, then erode slightly
+    to avoid artefacts right at the mosaic edge.
+
+    Returns a float32 array of 0/1 with the same H×W as rgb.
+    """
+    mask = (rgb.max(axis=-1) > 0.004).astype(np.float32)
+    if erode_px > 0:
+        mask = binary_erosion(mask, iterations=erode_px).astype(np.float32)
+    return mask
+
+
+def hst_background_fill(
+    gdir: Path,
+    gid: str,
+    ref_hdr: fits.Header,
+    nw: int,
+    nh: int,
+    coverage: np.ndarray,
+) -> Optional[np.ndarray]:
+    """
+    Load HST F814W (preferring ``{gid}_F814W_large.fits`` over the standard
+    cutout), reproject to the output WCS, and return a warm-gray float32
+    H×W×3 array normalised to [0,1] for use as background fill in regions
+    where ``coverage == 0``.
+
+    Returns None if no HST file exists or there is no signal outside the
+    JWST footprint.
+    """
+    for name in (f"{gid}_F814W_large.fits", f"{gid}_F814W.fits"):
+        hst_path = gdir / name
+        if hst_path.exists():
+            break
+    else:
+        return None
+
+    hst_data, hst_hdr = load_fits(hst_path)
+    reproj = np.maximum(reproject_to(hst_data, hst_hdr, ref_hdr), 0.0)
+
+    outside = coverage < 0.5
+    if not reproj[outside].any():
+        return None
+
+    pos = reproj[reproj > 0]
+    if len(pos) < 10:
+        return None
+
+    peak = np.percentile(pos, 99.5)
+    norm = np.clip(
+        np.arcsinh(3.0 * reproj / (peak + 1e-12)) / np.arcsinh(3.0), 0.0, 1.0
+    )
+    # Warm-gray tint — slightly warmer than neutral to distinguish from JWST sky
+    return (norm[..., None] * np.array([0.72, 0.68, 0.60], dtype=np.float32))
+
+
 def overlay_xray(
     rgb: np.ndarray,
     ref_hdr: fits.Header,
@@ -124,18 +184,19 @@ def overlay_xray(
     dec: float,
     redshift: float,
     radius_arcmin: float = 4.0,
-    smooth_sigma: float = 35.0,
-    smooth_haze_sigma: float = 90.0,
-    smooth_haze_weight: float = 0.25,
+    smooth_sigma: float = 20.0,
+    smooth_haze_sigma: float = 50.0,
+    smooth_haze_weight: float = 0.15,
     alpha_peak: float = 0.30,
-    norm_power: float = 1.5,
-    noise_floor_pct: float = 50.0,
+    norm_power: float = 2.2,
+    noise_floor_pct: float = 65.0,
     contour_levels: Tuple[float, ...] = (0.20, 0.35, 0.58, 0.82),
     contour_linewidths: Tuple[float, ...] = (0.4, 0.55, 0.75, 1.0),
     contour_alpha: float = 0.85,
     show_contours: bool = True,
     use_small_scale: bool = False,
     per_group_xray: Optional[Path] = None,
+    coverage: Optional[np.ndarray] = None,
     ax=None,
     verbose: bool = False,
 ) -> np.ndarray:
@@ -157,22 +218,30 @@ def overlay_xray(
     ra, dec          : X-ray centre (prefer RA_xray_peak / Dec_xray_peak)
     redshift         : group redshift (determines overlay colour)
     radius_arcmin    : cutout half-width when using global maps
-    smooth_sigma     : core Gaussian smoothing in output pixels
-    smooth_haze_sigma: wide haze Gaussian sigma (feathers the boundary)
-    smooth_haze_weight: weight of haze pass (0.25 = 25 % contribution)
+    smooth_sigma     : core Gaussian smoothing in output pixels (default 20)
+    smooth_haze_sigma: wide haze Gaussian sigma (default 50)
+    smooth_haze_weight: weight of haze pass (default 0.15)
     alpha_peak       : maximum alpha in the RGBA colormap
-    norm_power       : power applied to normalised map before colormap lookup;
-                       > 1 suppresses faint regions, < 1 lifts them
-    noise_floor_pct  : percentile of positive pixels used as noise floor
+    norm_power       : power applied to normalised map (default 2.2 — suppresses
+                       shallow X-ray from spreading into empty-sky regions)
+    noise_floor_pct  : percentile of positive pixels used as noise floor (default 65)
     contour_levels   : normalised levels at which to draw contours (0–1)
     contour_linewidths: linewidths for each contour level
     contour_alpha    : alpha for contour lines
     show_contours    : draw contour lines on ``ax`` (requires ax != None)
     use_small_scale  : use compact/wavelet map instead of diffuse map
     per_group_xray   : path to a pre-cleaned per-group FITS (overrides global)
+    coverage         : optional float32 H×W mask (1=optical data, 0=no data).
+                       When provided, the X-ray overlay and contours are
+                       clipped to the optical footprint so the X-ray never
+                       bleeds into black sky.  Compute with
+                       ``optical_coverage_mask(rgb)``.
     ax               : matplotlib Axes on which to draw contours
     verbose          : print progress
     """
+    # ── Optical coverage mask ─────────────────────────────────────────────────
+    cov = coverage if coverage is not None else np.ones(rgb.shape[:2], dtype=np.float32)
+
     # ── Load X-ray data ───────────────────────────────────────────────────────
     if per_group_xray is not None and per_group_xray.exists():
         if verbose:
@@ -193,13 +262,13 @@ def overlay_xray(
         if verbose:
             print(f"  X-ray: {xray_map.name}", file=sys.stderr)
 
-    # ── Reproject onto RGB grid ───────────────────────────────────────────────
-    raw = np.maximum(reproject_to(xdata, xhdr, ref_hdr), 0.0)
+    # ── Reproject onto RGB grid and mask to optical footprint ─────────────────
+    raw = np.maximum(reproject_to(xdata, xhdr, ref_hdr), 0.0) * cov
 
     # ── Smooth (dual-pass: core structure + wide haze) ────────────────────────
     sc = gaussian_filter(raw, sigma=smooth_sigma)
     sh = gaussian_filter(raw, sigma=smooth_haze_sigma)
-    smoothed = sc + smooth_haze_weight * sh
+    smoothed = (sc + smooth_haze_weight * sh) * cov   # re-apply mask after blur
 
     pos_mask = smoothed > 0
     if not np.any(pos_mask):
@@ -209,30 +278,32 @@ def overlay_xray(
 
     # ── Noise floor + normalise ───────────────────────────────────────────────
     noise_floor = np.percentile(smoothed[pos_mask], noise_floor_pct)
-    smoothed    = np.maximum(smoothed - noise_floor, 0.0)
+    smoothed    = np.maximum(smoothed - noise_floor, 0.0) * cov
 
-    peak = np.percentile(smoothed[smoothed > 0], 98.0)
+    pos2 = smoothed[smoothed > 0]
+    if len(pos2) == 0:
+        return rgb
+
+    peak = np.percentile(pos2, 98.0)
     k    = 8.0
     norm = np.clip(
         np.log1p(k * np.clip(smoothed / (peak + 1e-12), 0.0, 1.0)) / np.log1p(k),
         0.0, 1.0,
-    )
+    ) * cov
 
     # ── RGBA colormap composite ───────────────────────────────────────────────
     r, g, b = xray_color(redshift)
     cmap     = _xray_cmap(r, g, b)
-    # Scale peak alpha — default cmap has 0.30 at norm=1; rescale if requested
     alpha_scale = alpha_peak / 0.30
     xray_rgba   = cmap(norm ** norm_power)
-    xray_rgba[..., 3] = np.clip(xray_rgba[..., 3] * alpha_scale, 0.0, 1.0)
+    xray_rgba[..., 3] = np.clip(xray_rgba[..., 3] * alpha_scale * cov, 0.0, 1.0)
 
     alpha_ch = xray_rgba[..., 3:4]
     rgb_out  = np.clip(xray_rgba[..., :3] * alpha_ch + rgb * (1.0 - alpha_ch), 0.0, 1.0)
 
     # ── Contour lines ─────────────────────────────────────────────────────────
     if show_contours and ax is not None and len(contour_levels) > 0:
-        # Extra smooth for contours — reduces pixel-level jagginess
-        norm_c = gaussian_filter(norm, sigma=12.0)
+        norm_c = gaussian_filter(norm, sigma=12.0) * cov
         if norm_c.max() > 0:
             norm_c = norm_c / norm_c.max()
 
@@ -242,7 +313,7 @@ def overlay_xray(
         for i, lvl in enumerate(contour_levels):
             if lvl >= norm_c.max():
                 continue
-            mask = _largest_component_mask(norm_c, lvl)
+            mask = _largest_component_mask(norm_c * cov, lvl)
             col  = pink_shades[min(i, len(pink_shades) - 1)]
             ax.contour(
                 mask, levels=[0.5],

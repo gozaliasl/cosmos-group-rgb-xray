@@ -45,7 +45,7 @@ from astropy.wcs import WCS
 from PIL import Image
 
 from .io_fits import load_fits
-from .xray import overlay_xray
+from .xray import overlay_xray, optical_coverage_mask, hst_background_fill
 
 
 # Native JWST NIRCam pixel scale at 30 mas/px mosaics
@@ -153,6 +153,18 @@ def run_single(
         if verbose:
             print(f"  WCS: scratch ({scale_deg*3600*1000:.1f} mas/px)", flush=True)
 
+    # ── Optical coverage mask + HST background fill ───────────────────────────
+    coverage = optical_coverage_mask(rgb)
+
+    # Fill no-JWST areas with HST F814W warm-gray background if available
+    if wcs_path is not None:
+        gdir = wcs_path.parent
+        gid  = wcs_path.stem.split("_")[0]
+        hst_bg = hst_background_fill(gdir, gid, ref_hdr, nw, nh, coverage)
+        if hst_bg is not None:
+            no_cov = (coverage < 0.5)[..., None]
+            rgb = rgb * (1 - no_cov) + hst_bg * no_cov
+
     # ── X-ray overlay ─────────────────────────────────────────────────────────
     fig, ax = plt.subplots(figsize=(nw / 300, nh / 300), dpi=300)
     ax.axis("off")
@@ -171,6 +183,7 @@ def run_single(
         noise_floor_pct=noise_floor_pct,
         contour_levels=contour_levels,
         show_contours=show_contours,
+        coverage=coverage,
         ax=ax,
         verbose=verbose,
     )

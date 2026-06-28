@@ -345,6 +345,9 @@ def main() -> None:
                     help="Process only these group IDs (default: all)")
     pa.add_argument("--size",      type=float, default=None,
                     help="Override cutout size [arcsec] for all groups (ignores redshift)")
+    pa.add_argument("--hst-size",  type=float, default=None,
+                    help="Override HST cutout size [arcsec] independently of --size "
+                         "(useful for border groups where HST covers more sky than JWST)")
     pa.add_argument("--radius",    type=float, default=None,
                     help="Physical aperture radius [Mpc] to compute size from redshift "
                          "(default: 1.5 Mpc); ignored if --size is given")
@@ -445,7 +448,8 @@ def main() -> None:
                     print(f"    [{g['id']}] exists — skip", flush=True)
                     results[g["id"]] += 1
                     continue
-                if cut_and_save(mosaic, g["ra"], g["dec"], g["size"],
+                hst_sz = args.hst_size if args.hst_size else g["size"]
+                if cut_and_save(mosaic, g["ra"], g["dec"], hst_sz,
                                 out, f"[{g['id']}] F814W"):
                     results[g["id"]] += 1
 
