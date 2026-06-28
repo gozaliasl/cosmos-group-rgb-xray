@@ -1,11 +1,11 @@
 """
-X-ray overlay: cutout → reproject → smooth → screen-blend onto RGB.
+X-ray overlay: cutout → reproject → smooth → RGBA colormap composite + contours.
 
 Two pre-processed global maps are supported:
   XRAY_LARGE  cosmos_chaxmm14_noem_520.fits  — diffuse ICM (point srcs removed)
   XRAY_SMALL  cosmos_chaxmm14_520_wv.3.fits  — compact sources (wavelet scale 3)
 
-Per-group pre-cleaned FITS (e.g. gg15/15_large_scale.fits) take priority
+Per-group pre-cleaned FITS (e.g. 15_xray_cutout.fits) take priority
 over the global maps when they exist and cover the group sky position.
 
 IMPORTANT: never fall back to the raw combined map cosmos_chaxmm14_520.fits
@@ -14,6 +14,18 @@ IMPORTANT: never fall back to the raw combined map cosmos_chaxmm14_520.fits
 Colour convention:
   z < 0.3  → magenta  (0.85, 0.0, 1.0)
   z ≥ 0.3  → cyan     (0.0,  1.0, 1.0)
+
+Rendering:
+  The X-ray is composited as a transparent RGBA colormap (background is fully
+  transparent, only emission regions get colour).  Contour lines at 4 levels
+  mark the X-ray surface-brightness structure.  This preserves galaxy colours
+  and BCG visibility at all X-ray intensities.
+
+WCS orientation note:
+  When the reference RGB was loaded from a PIL image (TIFF/PNG, origin='upper'),
+  build the scratch WCS with CD2_2 = -scale_deg (negative).  PIL row-0 = north
+  (top), but FITS convention with CD2_2>0 puts row-0 = south, which would flip
+  the X-ray north-south relative to the optical image.
 """
 from __future__ import annotations
 
@@ -24,9 +36,9 @@ from typing import Optional, Tuple
 import numpy as np
 from astropy.io import fits
 from astropy.wcs import WCS
-from scipy.ndimage import gaussian_filter
+from scipy.ndimage import gaussian_filter, label
+import matplotlib.colors as mcolors
 
-from .blend import screen
 from .io_fits import cutout_from_map, load_fits, reproject_to, wcs_covers
 
 # Paths to global COSMOS X-ray maps — update for your cluster/server
@@ -42,6 +54,33 @@ def xray_color(redshift: float) -> Tuple[float, float, float]:
     return (0.85, 0.0, 1.0) if redshift < 0.3 else (0.0, 1.0, 1.0)
 
 
+def _xray_cmap(r: float, g: float, b: float) -> mcolors.LinearSegmentedColormap:
+    """
+    Build an RGBA colormap where the background is fully transparent and only
+    emission regions get colour.  Alpha ramps from 0 → 0.08 → 0.19 → 0.30
+    so faint halo is visible while the peak stays semi-transparent (galaxies
+    show through).
+    """
+    colors_rgba = [
+        (0,   0,   0,    0.00),   # fully transparent — empty sky
+        (1.0, 0.5, 0.7,  0.08),   # faint outer halo — subtle tint
+        (r,   g,   b,    0.19),   # mid emission
+        (r*0.9+0.05, g, b, 0.30), # peak — semi-transparent
+    ]
+    return mcolors.LinearSegmentedColormap.from_list("xray_rgba", colors_rgba)
+
+
+def _largest_component_mask(arr: np.ndarray, level: float) -> np.ndarray:
+    """Binary mask keeping only the single largest connected component ≥ level."""
+    binary = arr >= level
+    labeled, n = label(binary)
+    if n == 0:
+        return np.zeros_like(arr, dtype=float)
+    sizes = np.bincount(labeled.ravel())
+    sizes[0] = 0
+    return (labeled == sizes.argmax()).astype(float)
+
+
 def find_per_group_xray(
     group_dir: Path,
     group_id: int,
@@ -55,6 +94,7 @@ def find_per_group_xray(
     don't actually cover the group sky position are rejected.
     """
     candidates = [
+        f"{group_id}_xray_cutout.fits",
         f"{group_id}_large_scale.fits",
         f"{group_id}_small_scale.fits",
         f"{group_id}_xray.fits",
@@ -84,34 +124,56 @@ def overlay_xray(
     dec: float,
     redshift: float,
     radius_arcmin: float = 4.0,
-    smooth_sigma: float = 60.0,
-    alpha: float = 0.65,
-    gamma: float = 0.55,
-    pmin: float = 30.0,
-    pmax: float = 99.5,
+    smooth_sigma: float = 35.0,
+    smooth_haze_sigma: float = 90.0,
+    smooth_haze_weight: float = 0.25,
+    alpha_peak: float = 0.30,
+    norm_power: float = 1.5,
+    noise_floor_pct: float = 50.0,
+    contour_levels: Tuple[float, ...] = (0.20, 0.35, 0.58, 0.82),
+    contour_linewidths: Tuple[float, ...] = (0.4, 0.55, 0.75, 1.0),
+    contour_alpha: float = 0.85,
+    show_contours: bool = True,
     use_small_scale: bool = False,
     per_group_xray: Optional[Path] = None,
+    ax=None,
     verbose: bool = False,
 ) -> np.ndarray:
     """
-    Reproject and screen-blend X-ray onto the RGB image.
+    Reproject and RGBA-composite X-ray emission onto the RGB image.
+
+    The X-ray is rendered as a transparent colormap (background = fully
+    transparent) composited over the optical RGB.  Contour lines are drawn
+    on the provided matplotlib Axes if ``ax`` is supplied and
+    ``show_contours`` is True.
 
     Parameters
     ----------
-    rgb            : float HxWx3 RGB array in [0,1]
-    ref_hdr        : WCS header matching the RGB pixel grid
-    ra, dec        : X-ray centre (prefer RA_xray_peak / Dec_xray_peak from catalog)
-    redshift       : group redshift (determines overlay colour)
-    radius_arcmin  : cutout half-width when using global maps
-    smooth_sigma   : Gaussian smoothing in output pixels (diffuse ICM glow)
-    alpha          : maximum screen-blend opacity
-    gamma          : power-law applied to normalised X-ray map (lifts faint emission)
-    pmin, pmax     : percentiles for background clipping and peak normalisation
-    use_small_scale: use compact/wavelet map instead of diffuse map
-    per_group_xray : path to a pre-cleaned per-group FITS (overrides global maps)
-    verbose        : print progress
+    rgb              : float HxWx3 RGB array in [0,1]
+    ref_hdr          : WCS header matching the RGB pixel grid.
+                       IMPORTANT: if the RGB was loaded from a PIL image with
+                       origin='upper', build this header with CD2_2 = -scale
+                       (negative) so north is up in display coordinates.
+    ra, dec          : X-ray centre (prefer RA_xray_peak / Dec_xray_peak)
+    redshift         : group redshift (determines overlay colour)
+    radius_arcmin    : cutout half-width when using global maps
+    smooth_sigma     : core Gaussian smoothing in output pixels
+    smooth_haze_sigma: wide haze Gaussian sigma (feathers the boundary)
+    smooth_haze_weight: weight of haze pass (0.25 = 25 % contribution)
+    alpha_peak       : maximum alpha in the RGBA colormap
+    norm_power       : power applied to normalised map before colormap lookup;
+                       > 1 suppresses faint regions, < 1 lifts them
+    noise_floor_pct  : percentile of positive pixels used as noise floor
+    contour_levels   : normalised levels at which to draw contours (0–1)
+    contour_linewidths: linewidths for each contour level
+    contour_alpha    : alpha for contour lines
+    show_contours    : draw contour lines on ``ax`` (requires ax != None)
+    use_small_scale  : use compact/wavelet map instead of diffuse map
+    per_group_xray   : path to a pre-cleaned per-group FITS (overrides global)
+    ax               : matplotlib Axes on which to draw contours
+    verbose          : print progress
     """
-    # --- Load X-ray data ---
+    # ── Load X-ray data ───────────────────────────────────────────────────────
     if per_group_xray is not None and per_group_xray.exists():
         if verbose:
             print(f"  X-ray: using per-group file {per_group_xray.name}", file=sys.stderr)
@@ -122,67 +184,70 @@ def overlay_xray(
             if verbose:
                 print("  X-ray: no global map found — skipping", file=sys.stderr)
             return rgb
-
         xdata, xhdr = cutout_from_map(xray_map, ra, dec, radius_arcmin * 1.5)
         if not np.any(xdata > 0):
             if verbose:
-                print(f"  X-ray: no signal in {xray_map.name} at this position", file=sys.stderr)
+                print(f"  X-ray: no signal in {xray_map.name} at this position",
+                      file=sys.stderr)
             return rgb
         if verbose:
             print(f"  X-ray: {xray_map.name}", file=sys.stderr)
 
-    # --- Reproject onto RGB grid ---
-    reproj = reproject_to(xdata, xhdr, ref_hdr)
+    # ── Reproject onto RGB grid ───────────────────────────────────────────────
+    raw = np.maximum(reproject_to(xdata, xhdr, ref_hdr), 0.0)
 
-    # --- Smooth (diffuse ICM glow) ---
-    # Two-pass smoothing: fine pass preserves core structure,
-    # coarse pass (3× sigma) feathers the boundary into a haze
-    # that fills the whole field rather than stopping at a hard edge.
-    raw = np.maximum(reproj, 0.0)
-    smoothed_core = gaussian_filter(raw, sigma=smooth_sigma)
-    smoothed_haze = gaussian_filter(raw, sigma=smooth_sigma * 3.0)
-    # Combine: core structure + wide haze background
-    smoothed = smoothed_core + 0.35 * smoothed_haze
+    # ── Smooth (dual-pass: core structure + wide haze) ────────────────────────
+    sc = gaussian_filter(raw, sigma=smooth_sigma)
+    sh = gaussian_filter(raw, sigma=smooth_haze_sigma)
+    smoothed = sc + smooth_haze_weight * sh
 
-    mask = smoothed > 0
-    if not np.any(mask):
+    pos_mask = smoothed > 0
+    if not np.any(pos_mask):
         if verbose:
             print("  X-ray: empty after reproject — skipping", file=sys.stderr)
         return rgb
 
-    # --- Background clip + normalise ---
-    noise_floor = np.percentile(smoothed[mask], pmin)
+    # ── Noise floor + normalise ───────────────────────────────────────────────
+    noise_floor = np.percentile(smoothed[pos_mask], noise_floor_pct)
     smoothed    = np.maximum(smoothed - noise_floor, 0.0)
 
-    peak = np.percentile(smoothed[smoothed > 0], pmax)
-    # Log stretch: compresses the bright core so galaxy colours survive,
-    # while lifting the faint extended haze into the purple background
-    k    = 10.0  # log softness — higher = more compression in core
-    norm = np.log1p(k * np.clip(smoothed / (peak + 1e-12), 0.0, 1.0)) / np.log1p(k)
+    peak = np.percentile(smoothed[smoothed > 0], 98.0)
+    k    = 8.0
+    norm = np.clip(
+        np.log1p(k * np.clip(smoothed / (peak + 1e-12), 0.0, 1.0)) / np.log1p(k),
+        0.0, 1.0,
+    )
 
-    # --- Colour layer ---
+    # ── RGBA colormap composite ───────────────────────────────────────────────
     r, g, b = xray_color(redshift)
-    colour_layer = np.zeros_like(rgb)
-    colour_layer[..., 0] = r * norm
-    colour_layer[..., 1] = g * norm
-    colour_layer[..., 2] = b * norm
+    cmap     = _xray_cmap(r, g, b)
+    # Scale peak alpha — default cmap has 0.30 at norm=1; rescale if requested
+    alpha_scale = alpha_peak / 0.30
+    xray_rgba   = cmap(norm ** norm_power)
+    xray_rgba[..., 3] = np.clip(xray_rgba[..., 3] * alpha_scale, 0.0, 1.0)
 
-    # --- Screen blend ---
-    blended = np.clip(screen(rgb, colour_layer * alpha), 0.0, 1.0)
+    alpha_ch = xray_rgba[..., 3:4]
+    rgb_out  = np.clip(xray_rgba[..., :3] * alpha_ch + rgb * (1.0 - alpha_ch), 0.0, 1.0)
 
-    # --- Faint purple background haze in unlit corners ---
-    # Where the X-ray norm is essentially zero (corners of the image),
-    # add a very subtle purple tint so the background is deep indigo
-    # rather than black, matching the full-field purple look of the
-    # reference image.
-    haze_strength = 0.08
-    haze_norm = gaussian_filter(norm, sigma=smooth_sigma * 5.0)
-    haze_norm = np.clip(haze_norm / (haze_norm.max() + 1e-12), 0.0, 1.0)
-    corner_mask = 1.0 - haze_norm          # strongest where X-ray is faint
-    purple = np.array([r * 0.4, 0.0, b * 0.6], dtype=np.float32)
-    for c in range(3):
-        blended[..., c] = np.clip(
-            blended[..., c] + corner_mask * haze_strength * purple[c], 0.0, 1.0
-        )
+    # ── Contour lines ─────────────────────────────────────────────────────────
+    if show_contours and ax is not None and len(contour_levels) > 0:
+        # Extra smooth for contours — reduces pixel-level jagginess
+        norm_c = gaussian_filter(norm, sigma=12.0)
+        if norm_c.max() > 0:
+            norm_c = norm_c / norm_c.max()
 
-    return blended
+        pink_shades = ["#FFB6C1", "#FF69B4", "#FF1493", "#C71585"]
+        lws = list(contour_linewidths) + [1.2] * max(0, len(contour_levels) - len(contour_linewidths))
+
+        for i, lvl in enumerate(contour_levels):
+            if lvl >= norm_c.max():
+                continue
+            mask = _largest_component_mask(norm_c, lvl)
+            col  = pink_shades[min(i, len(pink_shades) - 1)]
+            ax.contour(
+                mask, levels=[0.5],
+                colors=[col], linewidths=[lws[i]],
+                alpha=contour_alpha, zorder=3,
+            )
+
+    return rgb_out
