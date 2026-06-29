@@ -150,6 +150,42 @@ def _asinh(x: np.ndarray, s: float) -> np.ndarray:
     return np.arcsinh(s * np.clip(x, 0, None)) / np.arcsinh(s)
 
 
+def _scratch_wcs_from_fits(ref_hdr: fits.Header, ny: int, nx: int) -> fits.Header:
+    """
+    Build a clean north-up scratch WCS matching the pixel grid of the
+    north-up-flipped RGB (row-0 = north, as displayed with origin='upper').
+
+    Extracts pixel scale and sky centre from the original FITS header, then
+    constructs a minimal TAN WCS with CD2_2 = -scale (negative), which is
+    the convention used by single.py for PIL/PIL-displayed images.
+    """
+    from astropy.wcs import WCS as _WCS
+    wcs_in = _WCS(ref_hdr, naxis=2)
+    # Sky coordinate at the original image centre
+    ny_orig = ref_hdr.get("NAXIS2", ny)
+    nx_orig = ref_hdr.get("NAXIS1", nx)
+    sky = wcs_in.pixel_to_world(nx_orig / 2.0, ny_orig / 2.0)
+    ra  = float(sky.ra.deg)
+    dec = float(sky.dec.deg)
+    # Pixel scale: try CD matrix first, fall back to CDELT
+    scale = abs(ref_hdr.get("CD2_2", ref_hdr.get("CDELT2", 30e-3 / 3600.0)))
+    hdr = fits.Header()
+    hdr["NAXIS"]  = 2
+    hdr["NAXIS1"] = nx
+    hdr["NAXIS2"] = ny
+    hdr["CTYPE1"] = "RA---TAN"
+    hdr["CTYPE2"] = "DEC--TAN"
+    hdr["CRVAL1"] = ra
+    hdr["CRVAL2"] = dec
+    hdr["CRPIX1"] = nx / 2.0
+    hdr["CRPIX2"] = ny / 2.0
+    hdr["CD1_1"]  = -scale    # RA decreases left→right
+    hdr["CD1_2"]  = 0.0
+    hdr["CD2_1"]  = 0.0
+    hdr["CD2_2"]  = -scale    # Dec decreases top→bottom (north-up PIL convention)
+    return hdr
+
+
 def _norm_band(x: np.ndarray, plo: float = 0.5, phi: float = 99.5) -> np.ndarray:
     """Percentile-normalize a band to [0, 1] before asinh stretch.
 
@@ -240,18 +276,15 @@ def build_rgb_fits(
     if uvista_fill is not None:
         rgb = _blend_fill(rgb, uvista_fill)
 
-    # Adjust header WCS to match the north-up flip so overlay_xray reprojects correctly.
-    # Flipping rows means: CD2_2 negated, CRPIX2 mirrored.
+    # Build a clean scratch WCS for the north-up RGB array.
+    # This mirrors exactly what single.py does for PIL-loaded TIFFs:
+    # a fresh TAN header with CD2_2 = -scale_deg so row-0 = north.
+    scratch_hdr: Optional[fits.Header] = None
     if ref_hdr is not None:
-        ny = rgb.shape[0]
-        ref_hdr = ref_hdr.copy()
-        for key in ("CD2_2", "CDELT2"):
-            if key in ref_hdr:
-                ref_hdr[key] = -ref_hdr[key]
-        if "CRPIX2" in ref_hdr:
-            ref_hdr["CRPIX2"] = ny + 1 - ref_hdr["CRPIX2"]
+        ny_px, nx_px = rgb.shape[:2]
+        scratch_hdr = _scratch_wcs_from_fits(ref_hdr, ny_px, nx_px)
 
-    return rgb, ref_hdr
+    return rgb, scratch_hdr
 
 
 # ── UltraVista gap-fill helpers ───────────────────────────────────────────────
