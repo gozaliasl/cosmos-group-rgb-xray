@@ -158,11 +158,11 @@ def xray_params(snr: float, cutout_arcsec: float = 240.0) -> Dict[str, Any]:
     if extended:
         return dict(
             use_small_scale=False,
-            smooth_sigma=90.0,
+            smooth_sigma=160.0,
             radius_arcmin=cutout_arcsec / 60.0,
-            alpha_peak=0.40,
+            alpha_peak=0.36,
             norm_power=1.0,
-            noise_floor_pct=30.0,
+            noise_floor_pct=25.0,
         )
     else:
         return dict(
@@ -197,8 +197,9 @@ def process_group(
       1.  <data_root>/<group_id>/
       2.  <data_root>/         (flat layout — all groups in same dir)
     """
-    out_png = output_dir / f"group_{group_id:05d}_rgb_xray.png"
-    if out_png.exists() and not overwrite:
+    out_png         = output_dir / f"group_{group_id:05d}_rgb_xray.png"
+    out_png_nocon   = output_dir / f"group_{group_id:05d}_rgb_xray_nocontours.png"
+    if out_png.exists() and out_png_nocon.exists() and not overwrite:
         if verbose:
             print(f"  [{group_id}] already done — skipping", flush=True)
         return True
@@ -276,18 +277,44 @@ def process_group(
             verbose=verbose,
         )
     else:
-        # Save via matplotlib so contour lines drawn on ax are included
+        # Version 1: with contour lines
         fig.savefig(out_png, dpi=300, bbox_inches="tight", pad_inches=0)
         plt.close(fig)
+
+        # Version 2: no contour lines — re-render with heavier smoothing and
+        # tighter noise floor so faint outer noise doesn't show as dark blobs
+        xp_nc = dict(xp,
+                     smooth_sigma=xp["smooth_sigma"] * 1.8,
+                     noise_floor_pct=50.0)
+        fig2, ax2 = plt.subplots(figsize=(w_px / 300, h_px / 300), dpi=300)
+        ax2.axis("off")
+        fig2.subplots_adjust(0, 0, 1, 1)
+        rgb_xray_nc = overlay_xray(
+            rgb, ref_hdr,
+            ra=ra, dec=dec,
+            redshift=redshift,
+            per_group_xray=per_group,
+            verbose=False,
+            ax=ax2,
+            show_contours=False,
+            **xp_nc,
+        )
+        ax2.imshow(rgb_xray_nc, origin="upper", interpolation="nearest")
+        fig2.savefig(out_png_nocon, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close(fig2)
+
         if save_tiff:
             from PIL import Image
-            out_tiff = out_png.with_suffix(".tiff")
-            Image.open(out_png).save(out_tiff, compression="tiff_lzw", dpi=(300, 300))
-            if verbose:
-                print(f"  [{group_id}] TIFF → {out_tiff}", flush=True)
+            for p in (out_png, out_png_nocon):
+                out_tiff = p.with_suffix(".tiff")
+                Image.open(p).save(out_tiff, compression="tiff_lzw", dpi=(300, 300))
+                if verbose:
+                    print(f"  [{group_id}] TIFF → {out_tiff}", flush=True)
         if verbose:
             sz = out_png.stat().st_size / 1e6
             print(f"  [{group_id}] PNG  → {out_png}  ({sz:.1f} MB)", flush=True)
+            sz2 = out_png_nocon.stat().st_size / 1e6
+            print(f"  [{group_id}] PNG  → {out_png_nocon}  ({sz2:.1f} MB)", flush=True)
 
     if verbose:
         print(f"  [{group_id}] done", flush=True)
