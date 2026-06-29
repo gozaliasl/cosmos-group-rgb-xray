@@ -316,7 +316,7 @@ def run_batch(
     if group_ids:
         groups = {k: v for k, v in groups.items() if k in group_ids}
 
-    print(f"Processing {len(groups)} groups from {catalog.name}", flush=True)
+    print(f"Processing {len(groups)} groups from {catalog.name if catalog else 'scan'}", flush=True)
     print(f"RGB method : {rgb_method}", flush=True)
 
     # Inject max_px into each group info dict for process_group
