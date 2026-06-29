@@ -206,4 +206,104 @@ def build_rgb_fits(
     G = np.clip(G * (1.0 - 0.10 * np.exp(-0.5 * ((G - 0.30) / 0.20)**2)), 0, 1)
 
     rgb = np.clip(np.stack([R, G, B], axis=-1) + [0.002, 0.002, 0.022], 0, 1)
-    return rgb[::-1, :, :].astype(np.float32)  # flip north-up
+    rgb = rgb[::-1, :, :].astype(np.float32)  # flip north-up
+
+    # Fill JWST zero-coverage gaps with UltraVista ground-based NIR if available
+    uvista_fill = _build_uvista_fill(group_dir, group_id, rgb.shape[:2])
+    if uvista_fill is not None:
+        rgb = _blend_fill(rgb, uvista_fill)
+
+    return rgb
+
+
+# ── UltraVista gap-fill helpers ───────────────────────────────────────────────
+
+def _load_ground_band(group_dir: Path, group_id: str, filename: str,
+                      shape: Tuple[int, int]) -> Optional[np.ndarray]:
+    """Load a ground-based cutout and resize to JWST stamp shape."""
+    from scipy.ndimage import zoom
+    p = group_dir / filename
+    if not p.exists():
+        return None
+    with fits.open(p, memmap=False) as h:
+        d = np.asarray(h[0].data, dtype=np.float32)
+    d = np.nan_to_num(d, nan=0.0, posinf=0.0, neginf=0.0)
+    if d.shape != shape:
+        zy = shape[0] / d.shape[0]
+        zx = shape[1] / d.shape[1]
+        d = zoom(d, (zy, zx), order=3)
+    return d
+
+
+def _build_uvista_fill(
+    group_dir: Path,
+    group_id: str,
+    shape: Tuple[int, int],
+) -> Optional[np.ndarray]:
+    """
+    Build a float32 H×W×3 fill RGB for JWST zero-coverage regions.
+
+    Priority:
+      1. HSC i/r/g  (optical, from COSMOS2020) → vivid blue/green optical colors
+      2. UltraVista Ks/H/J (NIR fallback)
+
+    Both are at 0.15"/pix; JWST is 0.03"/pix so we upsample ~5×.
+    The optical HSC fill intentionally looks bluer than the warm JWST NIR,
+    making the space/ground boundary visible but natural.
+    """
+    # ── Try HSC g/r/i first ───────────────────────────────────────────────────
+    hsc_i = _load_ground_band(group_dir, group_id, f"{group_id}_HSC_i.fits", shape)
+    hsc_r = _load_ground_band(group_dir, group_id, f"{group_id}_HSC_r.fits", shape)
+    hsc_g = _load_ground_band(group_dir, group_id, f"{group_id}_HSC_g.fits", shape)
+
+    if hsc_i is not None or hsc_r is not None or hsc_g is not None:
+        r_band = hsc_i if hsc_i is not None else (hsc_r if hsc_r is not None else hsc_g)
+        g_band = hsc_r if hsc_r is not None else r_band
+        b_band = hsc_g if hsc_g is not None else g_band
+        R = _asinh(r_band, 10) * 0.90
+        G = _asinh(g_band, 10) * 0.85
+        B = _asinh(b_band,  8) * 0.95  # boost blue for clear optical appearance
+        fill = np.clip(np.stack([R, G, B], axis=-1) + [0.001, 0.001, 0.010], 0, 1)
+        return fill[::-1, :, :].astype(np.float32)  # north-up flip
+
+    # ── Fall back to UltraVista Ks/H/J ───────────────────────────────────────
+    ks = _load_ground_band(group_dir, group_id, f"{group_id}_UVISTA_Ks.fits", shape)
+    h  = _load_ground_band(group_dir, group_id, f"{group_id}_UVISTA_H.fits",  shape)
+    j  = _load_ground_band(group_dir, group_id, f"{group_id}_UVISTA_J.fits",  shape)
+
+    if ks is None and h is None and j is None:
+        return None
+
+    r_band = ks if ks is not None else (h if h is not None else j)
+    g_band = h  if h  is not None else r_band
+    b_band = j  if j  is not None else g_band
+    R = _asinh(r_band, 8) * 0.85
+    G = _asinh(g_band, 8) * 0.80
+    B = _asinh(b_band, 8) * 0.75
+    fill = np.clip(np.stack([R, G, B], axis=-1) + [0.002, 0.002, 0.015], 0, 1)
+    return fill[::-1, :, :].astype(np.float32)
+
+
+def _blend_fill(
+    jwst_rgb: np.ndarray,
+    fill_rgb: np.ndarray,
+    feather_sigma: float = 20.0,
+) -> np.ndarray:
+    """
+    Replace zero-coverage JWST pixels with ground-based fill, feathered at
+    the boundary so there is no hard edge.
+
+    jwst_weight = 1  → pure JWST
+    jwst_weight = 0  → pure ground fill
+    """
+    from scipy.ndimage import gaussian_filter
+
+    # Coverage mask: JWST has data where any band > sky floor
+    coverage = (jwst_rgb.max(axis=-1) > 0.005).astype(np.float32)
+
+    # Feather: smooth the mask edge
+    weight = gaussian_filter(coverage, sigma=feather_sigma)
+    weight = np.clip(weight, 0, 1)[..., np.newaxis]  # H×W×1
+
+    blended = jwst_rgb * weight + fill_rgb * (1.0 - weight)
+    return np.clip(blended, 0, 1).astype(np.float32)

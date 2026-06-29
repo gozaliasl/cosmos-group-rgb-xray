@@ -75,11 +75,21 @@ from cosmos_rgb_xray.cutout_size import cutout_arcsec as _cutout_arcsec
 warnings.filterwarnings("ignore", category=UserWarning, module="astropy")
 
 # ── Default mosaic paths (Candide) — all overridable via CLI ─────────────────
-DEFAULT_JWST_DIR = Path("/n23data2/cosmosweb/COSMOS-Web_Jan24/NIRCam/v0.8")
-DEFAULT_HST_DIR  = Path("/n17data/shuntov/COSMOS-Web/Images_HST-ACS/Jan24Tiles")
-DEFAULT_XRAY_DIR = Path("/n23data2/gozaliasl/xray_maps")
+DEFAULT_JWST_DIR    = Path("/n23data2/cosmosweb/COSMOS-Web_Jan24/NIRCam/v0.8")
+DEFAULT_HST_DIR     = Path("/n17data/shuntov/COSMOS-Web/Images_HST-ACS/Jan24Tiles")
+DEFAULT_XRAY_DIR    = Path("/n23data2/gozaliasl/xray_maps")
+DEFAULT_UVISTA_DIR  = Path("/automnt/n23data1/UltraVista/DR4-RC2")
+DEFAULT_COSMOS2020_DIR = Path("/n08data/COSMOS2020/images")
 
-JWST_FILTERS   = ["F115W", "F150W", "F277W", "F444W"]
+JWST_FILTERS    = ["F115W", "F150W", "F277W", "F444W"]
+UVISTA_FILTERS  = ["Y", "J", "H", "Ks"]
+
+# HSC bands used for optical gap-fill: filename stems in COSMOS2020/images/
+HSC_BANDS = {
+    "g": "HSC_G_SSP_PDR2.fits",
+    "r": "HSC_R_SSP_PDR2.fits",
+    "i": "HSC_i_SSP_PDR2_19_07_19_v3.fits",
+}
 XRAY_LARGE_MAP = "cosmos_chaxmm14_520.fits"        # full Chandra+XMM map (large scale)
 XRAY_SMALL_MAP = "cosmos_chaxmm14_520_wv.3.fits"  # wavelet scale-3 (compact/small scale)
 
@@ -137,6 +147,14 @@ def hst_mosaic_path(tile: str, res: int = 30,
     return hst_dir / (
         f"mosaic_cosmos_web_2024jan_{res}mas_tile_{tile}_hst_acs_wfc_f814w_drz_zp-28.09.fits"
     )
+
+
+def uvista_mosaic_path(band: str, uvista_dir: Path = DEFAULT_UVISTA_DIR) -> Optional[Path]:
+    """Find the UltraVista mosaic for a given band (Y/J/H/Ks) by globbing the directory."""
+    matches = sorted(uvista_dir.glob(f"UVISTA_{band}_*.fits"))
+    # Exclude weight maps
+    science = [p for p in matches if "weight" not in p.name]
+    return science[0] if science else None
 
 
 # ── Mosaic LRU cache ──────────────────────────────────────────────────────────
@@ -276,6 +294,42 @@ def cut_xray(group_id: int, ra: float, dec: float, size: float,
     return n
 
 
+def cut_uvista(group_id: int, ra: float, dec: float, size: float,
+               out_dir: Path, overwrite: bool,
+               uvista_dir: Path = DEFAULT_UVISTA_DIR) -> int:
+    """Cut UltraVista Y/J/H/Ks stamps. Returns number of bands successfully cut."""
+    n = 0
+    for band in UVISTA_FILTERS:
+        out = out_dir / f"{group_id}_UVISTA_{band}.fits"
+        if out.exists() and not overwrite:
+            print(f"  UVISTA_{band:3s}  exists — skip", flush=True); n += 1; continue
+        mosaic = uvista_mosaic_path(band, uvista_dir)
+        if mosaic is None:
+            print(f"  UVISTA_{band:3s}  mosaic not found in {uvista_dir}", flush=True)
+            continue
+        if cut_and_save(mosaic, ra, dec, size, out, f"UVISTA_{band}"):
+            n += 1
+    return n
+
+
+def cut_hsc(group_id: int, ra: float, dec: float, size: float,
+            out_dir: Path, overwrite: bool,
+            cosmos2020_dir: Path = DEFAULT_COSMOS2020_DIR) -> int:
+    """Cut HSC g/r/i stamps from COSMOS2020. Returns number of bands successfully cut."""
+    n = 0
+    for band, fname in HSC_BANDS.items():
+        out = out_dir / f"{group_id}_HSC_{band}.fits"
+        if out.exists() and not overwrite:
+            print(f"  HSC_{band}       exists — skip", flush=True); n += 1; continue
+        mosaic = cosmos2020_dir / fname
+        if not mosaic.exists():
+            print(f"  HSC_{band}       not found: {mosaic}", flush=True)
+            continue
+        if cut_and_save(mosaic, ra, dec, size, out, f"HSC_{band}"):
+            n += 1
+    return n
+
+
 # ── Catalog loader ────────────────────────────────────────────────────────────
 
 def load_catalog(path: Path) -> List[dict]:
@@ -319,9 +373,11 @@ def main() -> None:
         epilog=__doc__,
     )
     # What to cut
-    pa.add_argument("--jwst",  action="store_true", help="Cut JWST NIRCam (F115W F150W F277W F444W)")
-    pa.add_argument("--hst",   action="store_true", help="Cut HST ACS F814W")
-    pa.add_argument("--xray",  action="store_true", help="Cut Chandra/XMM X-ray maps (large + compact)")
+    pa.add_argument("--jwst",   action="store_true", help="Cut JWST NIRCam (F115W F150W F277W F444W)")
+    pa.add_argument("--hst",    action="store_true", help="Cut HST ACS F814W")
+    pa.add_argument("--xray",   action="store_true", help="Cut Chandra/XMM X-ray maps (large + compact)")
+    pa.add_argument("--uvista", action="store_true", help="Cut UltraVista Y/J/H/Ks (ground-based NIR fill)")
+    pa.add_argument("--hsc",    action="store_true", help="Cut HSC g/r/i from COSMOS2020 (optical gap-fill)")
 
     # Input / output
     pa.add_argument("--catalog",   required=True,  type=Path, help="Group catalog CSV")
@@ -333,8 +389,12 @@ def main() -> None:
                     help=f"JWST NIRCam mosaic directory (default: {DEFAULT_JWST_DIR})")
     pa.add_argument("--hst-dir",   type=Path, default=DEFAULT_HST_DIR,
                     help=f"HST ACS mosaic directory   (default: {DEFAULT_HST_DIR})")
-    pa.add_argument("--xray-dir",   type=Path, default=DEFAULT_XRAY_DIR,
+    pa.add_argument("--xray-dir",    type=Path, default=DEFAULT_XRAY_DIR,
                     help=f"X-ray map directory        (default: {DEFAULT_XRAY_DIR})")
+    pa.add_argument("--uvista-dir",      type=Path, default=DEFAULT_UVISTA_DIR,
+                    help=f"UltraVista mosaic directory     (default: {DEFAULT_UVISTA_DIR})")
+    pa.add_argument("--cosmos2020-dir",  type=Path, default=DEFAULT_COSMOS2020_DIR,
+                    help=f"COSMOS2020 images directory     (default: {DEFAULT_COSMOS2020_DIR})")
     pa.add_argument("--xray-large", type=str, default=XRAY_LARGE_MAP,
                     help=f"Large-scale X-ray map filename (default: {XRAY_LARGE_MAP})")
     pa.add_argument("--xray-small", type=str, default=XRAY_SMALL_MAP,
@@ -359,8 +419,8 @@ def main() -> None:
                     help="Centre X-ray cutout on optical (RA/Dec) or X-ray peak (default: xray)")
     args = pa.parse_args()
 
-    if not (args.jwst or args.hst or args.xray):
-        pa.error("Specify at least one of --jwst, --hst, --xray")
+    if not (args.jwst or args.hst or args.xray or args.uvista or args.hsc):
+        pa.error("Specify at least one of --jwst, --hst, --xray, --uvista, --hsc")
 
     # Output root is created automatically — no manual mkdir needed
     args.output.mkdir(parents=True, exist_ok=True)
@@ -380,10 +440,14 @@ def main() -> None:
     print(f"Data types : "
           f"{'JWST ' if args.jwst else ''}"
           f"{'HST '  if args.hst  else ''}"
-          f"{'X-ray' if args.xray else ''}", flush=True)
-    if args.jwst:  print(f"JWST dir   : {args.jwst_dir}", flush=True)
-    if args.hst:   print(f"HST dir    : {args.hst_dir}",  flush=True)
-    if args.xray:  print(f"X-ray dir  : {args.xray_dir}", flush=True)
+          f"{'X-ray' if args.xray else ''}"
+          f"{'UltraVista ' if args.uvista else ''}"
+          f"{'HSC' if args.hsc else ''}", flush=True)
+    if args.jwst:   print(f"JWST dir      : {args.jwst_dir}",        flush=True)
+    if args.hst:    print(f"HST dir       : {args.hst_dir}",         flush=True)
+    if args.xray:   print(f"X-ray dir     : {args.xray_dir}",        flush=True)
+    if args.uvista: print(f"UVista dir    : {args.uvista_dir}",       flush=True)
+    if args.hsc:    print(f"COSMOS2020 dir: {args.cosmos2020_dir}",   flush=True)
     print(f"Output     : {args.output}/<catalog>/<group_id>/  (created automatically)", flush=True)
 
     # ── Pre-compute per-group metadata ────────────────────────────────────────
@@ -476,6 +540,48 @@ def main() -> None:
                 cy = g["dec_xray"] if args.xray_centre == "xray" else g["dec"]
                 if cut_and_save(xray_map, cx, cy, g["size"] * 1.5,
                                 out, f"[{g['id']}] {suffix}"):
+                    results[g["id"]] += 1
+
+    # ── UltraVista: single full-field mosaics, no tile needed ─────────────────
+    if args.uvista:
+        print(f"\n{'═'*50}\n  UltraVista DR4 (Y J H Ks)\n{'═'*50}", flush=True)
+        for band in UVISTA_FILTERS:
+            mosaic = uvista_mosaic_path(band, args.uvista_dir)
+            if mosaic is None:
+                print(f"  {band} — mosaic not found in {args.uvista_dir}", flush=True)
+                continue
+            entry = _cache.get(mosaic)
+            if entry is None:
+                continue
+            print(f"  {band}", flush=True)
+            for g in groups:
+                out = g["out_dir"] / f"{g['id']}_UVISTA_{band}.fits"
+                if out.exists() and not args.overwrite:
+                    print(f"    [{g['id']}] exists — skip", flush=True)
+                    results[g["id"]] += 1
+                    continue
+                if cut_and_save(mosaic, g["ra"], g["dec"], g["size"],
+                                out, f"[{g['id']}] UVISTA_{band}"):
+                    results[g["id"]] += 1
+
+    # ── HSC g/r/i: COSMOS2020 full-field mosaics, no tile needed ─────────────
+    if args.hsc:
+        print(f"\n{'═'*50}\n  HSC g / r / i  (COSMOS2020)\n{'═'*50}", flush=True)
+        for band, fname in HSC_BANDS.items():
+            mosaic = args.cosmos2020_dir / fname
+            entry = _cache.get(mosaic)
+            if entry is None:
+                print(f"  HSC_{band} — not found: {mosaic}", flush=True)
+                continue
+            print(f"  HSC_{band}", flush=True)
+            for g in groups:
+                out = g["out_dir"] / f"{g['id']}_HSC_{band}.fits"
+                if out.exists() and not args.overwrite:
+                    print(f"    [{g['id']}] exists — skip", flush=True)
+                    results[g["id"]] += 1
+                    continue
+                if cut_and_save(mosaic, g["ra"], g["dec"], g["size"],
+                                out, f"[{g['id']}] HSC_{band}"):
                     results[g["id"]] += 1
 
     # ── Summary ───────────────────────────────────────────────────────────────
