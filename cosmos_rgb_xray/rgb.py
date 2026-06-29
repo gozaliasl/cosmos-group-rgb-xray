@@ -150,6 +150,22 @@ def _asinh(x: np.ndarray, s: float) -> np.ndarray:
     return np.arcsinh(s * np.clip(x, 0, None)) / np.arcsinh(s)
 
 
+def _norm_band(x: np.ndarray, plo: float = 0.5, phi: float = 99.5) -> np.ndarray:
+    """Percentile-normalize a band to [0, 1] before asinh stretch.
+
+    Uses only positive pixels for percentile estimation so empty-sky
+    zeros do not drag the lower percentile down.
+    """
+    pos = x[x > 0]
+    if len(pos) == 0:
+        return x
+    lo = np.percentile(pos, plo)
+    hi = np.percentile(pos, phi)
+    if hi <= lo:
+        return np.zeros_like(x)
+    return np.clip((x - lo) / (hi - lo), 0, None).astype(np.float32)
+
+
 def build_rgb_fits(
     group_dir: Path,
     group_id: str,
@@ -196,8 +212,14 @@ def build_rgb_fits(
     if any(x is None for x in (b, l, g, r)):
         return None, None
 
+    # Normalize each band to [0,1] via percentile scaling so the asinh
+    # stretch works regardless of the absolute flux units in the FITS files.
+    b, l, g, r = _norm_band(b), _norm_band(l), _norm_band(g), _norm_band(r)
+
     h_d = _load("F814W")
     use_hst = h_d is not None and h_d.shape == b.shape and h_d.max() > 0
+    if use_hst:
+        h_d = _norm_band(h_d)
 
     R = np.clip(_asinh(r*2.2, 14)*0.85 + _asinh(l*1.8, 12)*0.15, 0, 1)
     G = np.clip(_asinh(g,     12)*0.25 + _asinh(l*1.8, 12)*0.65
