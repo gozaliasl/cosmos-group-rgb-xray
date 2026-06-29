@@ -33,7 +33,7 @@ module load intelpython/3-2024.2.0
 
 REPO=/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray
 cd "$REPO"
-export PYTHONPATH="$REPO:$PYTHONPATH"
+export PYTHONPATH="$REPO:${PYTHONPATH:-}"
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 CATALOG="${CATALOG:-$REPO/catalogs/top20_cutout_combined.csv}"

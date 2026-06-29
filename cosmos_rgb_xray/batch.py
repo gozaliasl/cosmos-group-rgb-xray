@@ -160,20 +160,18 @@ def xray_params(snr: float, cutout_arcsec: float = 240.0) -> Dict[str, Any]:
             use_small_scale=False,
             smooth_sigma=60.0,
             radius_arcmin=cutout_arcsec / 60.0,
-            alpha=0.75,
-            gamma=0.55,
-            pmin=30.0,
-            pmax=99.5,
+            alpha_peak=0.75,
+            norm_power=2.0,
+            noise_floor_pct=60.0,
         )
     else:
         return dict(
             use_small_scale=True,
             smooth_sigma=15.0,
             radius_arcmin=max(cutout_arcsec / 60.0, DEFAULT_RADIUS_ARCMIN),
-            alpha=0.65,
-            gamma=0.50,
-            pmin=20.0,
-            pmax=99.0,
+            alpha_peak=0.65,
+            norm_power=2.2,
+            noise_floor_pct=65.0,
         )
 
 
