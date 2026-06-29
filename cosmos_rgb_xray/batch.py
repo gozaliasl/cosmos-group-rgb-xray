@@ -35,7 +35,7 @@ from astropy.wcs import WCS
 import numpy as np
 from PIL import Image
 
-from .rgb import build_rgb
+from .rgb import build_rgb, build_rgb_fits
 from .xray import find_per_group_xray, overlay_xray
 
 # Cutout radius used when no per-group X-ray file exists
@@ -222,6 +222,8 @@ def process_group(
         from .stiff import build_rgb_stiff
         rgb, ref_hdr = build_rgb_stiff(group_dir, group_id,
                                        output_dir=output_dir, verbose=verbose)
+    elif rgb_method == "asinh":
+        rgb, ref_hdr = build_rgb_fits(group_dir, str(group_id))
     else:
         rgb, ref_hdr = build_rgb(group_dir, group_id, verbose=verbose)
 

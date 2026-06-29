@@ -153,7 +153,7 @@ def _asinh(x: np.ndarray, s: float) -> np.ndarray:
 def build_rgb_fits(
     group_dir: Path,
     group_id: str,
-) -> Optional[np.ndarray]:
+) -> Tuple[Optional[np.ndarray], Optional[fits.Header]]:
     """
     Build a float32 H×W×3 RGB array directly from FITS cutouts using an
     asinh stretch with publication-tuned band mixing.
@@ -173,14 +173,19 @@ def build_rgb_fits(
 
     Returns
     -------
-    float32 H×W×3 array in [0,1], or None if required JWST bands are missing.
+    (float32 H×W×3 array in [0,1], FITS header) or (None, None) if required bands missing.
     """
+    ref_hdr: Optional[fits.Header] = None
+
     def _load(name: str) -> Optional[np.ndarray]:
+        nonlocal ref_hdr
         p = group_dir / f"{group_id}_{name}.fits"
         if not p.exists():
             return None
         with fits.open(p, memmap=False) as h:
             d = np.asarray(h[0].data, dtype=np.float32)
+            if ref_hdr is None:
+                ref_hdr = h[0].header.copy()
         return np.nan_to_num(d, nan=0.0, posinf=0.0, neginf=0.0)
 
     b = _load("F115W")
@@ -189,7 +194,7 @@ def build_rgb_fits(
     r = _load("F444W")
 
     if any(x is None for x in (b, l, g, r)):
-        return None
+        return None, None
 
     h_d = _load("F814W")
     use_hst = h_d is not None and h_d.shape == b.shape and h_d.max() > 0
@@ -213,7 +218,7 @@ def build_rgb_fits(
     if uvista_fill is not None:
         rgb = _blend_fill(rgb, uvista_fill)
 
-    return rgb
+    return rgb, ref_hdr
 
 
 # ── UltraVista gap-fill helpers ───────────────────────────────────────────────
