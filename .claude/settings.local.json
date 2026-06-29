@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 *)",
+      "Bash(ssh -o BatchMode=yes -o ConnectTimeout=10 candide \"echo connected && ls /automnt/n23data2/gozaliasl/groups_cutouts/group_inputs/ 2>/dev/null || ls ~/groups_cutouts/group_inputs/ 2>/dev/null\")",
+      "Bash(ssh -o BatchMode=yes candide \"ls /automnt/n23data2/gozaliasl/g\")",
+      "Bash(ssh -o BatchMode=yes candide \"ls /automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/ && echo '---' && git -C /automnt/n23data2/gozaliasl/cosmos-group-rgb-xray log --oneline -5\")",
+      "Bash(ssh -o BatchMode=yes candide ' *)",
+      "Bash(ssh -o BatchMode=yes candide 'find /automnt/n23data2/gozaliasl -name \"conda.sh\" 2>/dev/null | head -3')",
+      "Bash(ssh -o BatchMode=yes candide 'cat ~/.bashrc | grep conda | head -10')",
+      "Bash(grep -v \"^$\")",
+      "Bash(ssh -o BatchMode=yes candide 'cat ~/.bashrc')",
+      "Bash(ssh -o BatchMode=yes candide 'echo hi')",
+      "Bash(ssh -o BatchMode=yes candide 'ls /automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/')",
+      "Bash(ssh -o BatchMode=yes candide 'find /automnt -name \"*F814W*mosaic*\" -o -name \"hlsp_cosmos*F814W*\" -o -name \"*cosmos*acs*\" 2>/dev/null | grep -v \".tiff\" | head -10')",
+      "Bash(ssh -o BatchMode=yes candide 'ls /automnt/n23data2/shuntov/')",
+      "Bash(ssh -o BatchMode=yes candide 'find /automnt/n23data1 -maxdepth 4 -name \"*.fits\" | grep -iv \"weight\\\\|wht\\\\|err\\\\|cat\\\\|seg\\\\|flag\\\\|phot\" | grep -i \"cosmos.*subaru\\\\|subaru.*cosmos\\\\|HSC\\\\|supcam\\\\|CLAUDS\\\\|cosmos2020\\\\|cosmos_web\" | head -20')",
+      "Bash(ssh -o BatchMode=yes candide 'head -60 /automnt/n23data1/gavazzi/cosmos_web/web_python-config-jwst.py')",
+      "Bash(ssh -o BatchMode=yes candide 'find /automnt/n23data2/gozaliasl /automnt/n23data1 -maxdepth 5 -name \"*.cfg\" -o -name \"*.yaml\" -o -name \"*.txt\" 2>/dev/null | xargs grep -l \"HSC\\\\|subaru\" 2>/dev/null | head -5')",
+      "Bash(ssh -o BatchMode=yes candide 'ls /n17data/shuntov/COSMOS-Web/Images_HST-ACS/Jan24Tiles/ | head -5')",
+      "Bash(ssh -o BatchMode=yes candide 'ls /n17data/shuntov/COSMOS-Web/ 2>/dev/null || ls /n17data/shuntov/ 2>/dev/null | head -15')",
+      "Bash(ssh -o BatchMode=yes candide 'ls /n17data/shuntov/')",
+      "Bash(ssh -o BatchMode=yes -o ServerAliveInterval=5 candide 'ls /n17data/shuntov/COSMOS-Web/')",
+      "Bash(ssh -o ProxyCommand=none -p 22 candide 'find /n17data -maxdepth 4 -name \"*.fits\" 2>/dev/null | grep -i \"HSC\\\\|subaru\\\\|suprime\" | grep -iv \"weight\\\\|wht\\\\|err\\\\|cat\\\\|psf\\\\|seg\" | head -20')",
+      "Bash(scp /tmp/find_groundbased.slurm candide:/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/find_groundbased.slurm)",
+      "Bash(ssh -o BatchMode=yes candide 'sbatch /automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/find_groundbased.slurm')",
+      "Bash(ssh -o BatchMode=yes candide 'cat /automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/logs/groundbased_mosaics.txt 2>/dev/null || echo \"not yet written\"')",
+      "Bash(ssh -o BatchMode=yes candide 'find /automnt/n23data2/lpaquereau/COSMOSWeb -maxdepth 2 -name \"*.fits\" 2>/dev/null | grep -v \"bkgonly\\\\|empty_aper\\\\|weight\\\\|wht\\\\|err\\\\|psf\\\\|seg\\\\|cat\" | head -20')",
+      "Bash(ssh -o BatchMode=yes candide 'ls /automnt/n23data2/gozaliasl/groups_cutout/bgg_jwst_fits/gg15/')",
+      "Bash(git commit *)",
+      "Bash(ssh candide *)",
+      "Bash(chmod +x *)"
+    ]
+  }
+}

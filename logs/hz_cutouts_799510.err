@@ -1,0 +1,714 @@
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T19:26:17.129' from MJD-BEG.
+Set DATE-AVG to '2023-06-16T05:08:56.131' from MJD-AVG.
+Set DATE-END to '2024-04-23T13:30:58.404' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -118.662241 from OBSGEO-[XYZ].
+Set OBSGEO-B to   -14.819600 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1446438097.324 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T20:00:49.319' from MJD-BEG.
+Set DATE-AVG to '2023-06-14T08:47:33.472' from MJD-AVG.
+Set DATE-END to '2024-05-17T12:31:56.370' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -146.272993 from OBSGEO-[XYZ].
+Set OBSGEO-B to     3.038052 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1257668110.657 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T19:26:17.129' from MJD-BEG.
+Set DATE-AVG to '2023-06-06T11:26:31.632' from MJD-AVG.
+Set DATE-END to '2024-04-23T13:30:58.404' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -146.319405 from OBSGEO-[XYZ].
+Set OBSGEO-B to     3.061125 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1257543984.977 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T20:00:49.319' from MJD-BEG.
+Set DATE-AVG to '2023-06-04T05:19:02.591' from MJD-AVG.
+Set DATE-END to '2024-05-17T12:31:56.370' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -121.696414 from OBSGEO-[XYZ].
+Set OBSGEO-B to   -10.478127 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1373213329.829 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-07T06:40:15.844' from MJD-BEG.
+Set DATE-AVG to '2023-04-13T23:57:23.131' from MJD-AVG.
+Set DATE-END to '2023-04-14T10:14:56.024' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -136.669930 from OBSGEO-[XYZ].
+Set OBSGEO-B to    -1.934922 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1289230884.898 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-07T07:14:58.850' from MJD-BEG.
+Set DATE-AVG to '2023-04-14T00:32:05.257' from MJD-AVG.
+Set DATE-END to '2023-04-14T10:49:49.718' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -136.811422 from OBSGEO-[XYZ].
+Set OBSGEO-B to    -1.858853 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1288669146.973 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-07T06:40:15.908' from MJD-BEG.
+Set DATE-AVG to '2023-04-13T18:20:18.984' from MJD-AVG.
+Set DATE-END to '2023-04-14T10:14:56.024' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -136.932404 from OBSGEO-[XYZ].
+Set OBSGEO-B to    -1.793876 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1288191492.311 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-07T07:14:58.850' from MJD-BEG.
+Set DATE-AVG to '2023-04-13T18:55:00.879' from MJD-AVG.
+Set DATE-END to '2023-04-14T10:49:49.718' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -136.526292 from OBSGEO-[XYZ].
+Set OBSGEO-B to    -2.012232 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1289804595.306 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T19:26:17.129' from MJD-BEG.
+Set DATE-AVG to '2023-05-08T21:45:22.508' from MJD-AVG.
+Set DATE-END to '2024-04-23T13:30:58.404' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -118.662241 from OBSGEO-[XYZ].
+Set OBSGEO-B to   -14.819600 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1446438097.324 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T20:00:49.319' from MJD-BEG.
+Set DATE-AVG to '2023-05-01T08:18:24.996' from MJD-AVG.
+Set DATE-END to '2024-04-17T17:26:55.244' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -146.272993 from OBSGEO-[XYZ].
+Set OBSGEO-B to     3.038052 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1257668110.657 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T19:26:17.129' from MJD-BEG.
+Set DATE-AVG to '2023-05-23T06:02:31.011' from MJD-AVG.
+Set DATE-END to '2024-04-23T13:30:58.404' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.207147 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.877806 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1689696703.676 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T20:00:49.319' from MJD-BEG.
+Set DATE-AVG to '2023-05-12T17:10:26.015' from MJD-AVG.
+Set DATE-END to '2024-04-17T17:26:55.244' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -141.690221 from OBSGEO-[XYZ].
+Set OBSGEO-B to     0.713176 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1271188568.226 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-06T23:40:51.132' from MJD-BEG.
+Set DATE-AVG to '2023-05-19T02:22:00.480' from MJD-AVG.
+Set DATE-END to '2024-04-17T18:10:49.417' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.470998 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.960368 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1686657736.922 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-07T00:15:44.826' from MJD-BEG.
+Set DATE-AVG to '2023-05-19T12:52:34.114' from MJD-AVG.
+Set DATE-END to '2024-04-17T18:45:43.111' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -126.210463 from OBSGEO-[XYZ].
+Set OBSGEO-B to   -10.264433 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1380748653.520 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-06T23:40:51.132' from MJD-BEG.
+Set DATE-AVG to '2023-05-27T05:08:24.369' from MJD-AVG.
+Set DATE-END to '2024-04-17T18:10:49.481' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.339828 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.935089 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1696322701.386 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-07T00:15:44.826' from MJD-BEG.
+Set DATE-AVG to '2023-05-26T06:52:54.706' from MJD-AVG.
+Set DATE-END to '2024-04-17T18:45:43.111' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -143.604635 from OBSGEO-[XYZ].
+Set OBSGEO-B to     1.695386 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1265228203.720 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T10:27:13.745' from MJD-BEG.
+Set DATE-AVG to '2023-04-29T00:59:18.908' from MJD-AVG.
+Set DATE-END to '2024-04-17T18:10:49.417' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -143.363080 from OBSGEO-[XYZ].
+Set OBSGEO-B to     1.572297 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1265954850.776 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T11:01:56.687' from MJD-BEG.
+Set DATE-AVG to '2023-04-27T15:52:55.090' from MJD-AVG.
+Set DATE-END to '2024-04-17T18:45:43.111' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -143.021781 from OBSGEO-[XYZ].
+Set OBSGEO-B to     1.397977 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1266993810.076 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T10:27:13.745' from MJD-BEG.
+Set DATE-AVG to '2023-05-15T11:06:17.525' from MJD-AVG.
+Set DATE-END to '2024-04-17T18:10:49.481' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -137.160265 from OBSGEO-[XYZ].
+Set OBSGEO-B to    -1.671665 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1287298452.158 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T11:01:56.687' from MJD-BEG.
+Set DATE-AVG to '2023-05-11T13:11:48.048' from MJD-AVG.
+Set DATE-END to '2024-04-17T18:45:43.111' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -143.116899 from OBSGEO-[XYZ].
+Set OBSGEO-B to     1.446609 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1266702795.845 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-07T06:25:03.205' from MJD-BEG.
+Set DATE-AVG to '2023-04-25T17:58:29.303' from MJD-AVG.
+Set DATE-END to '2024-01-07T03:10:28.604' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -142.667285 from OBSGEO-[XYZ].
+Set OBSGEO-B to     1.216394 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1268088404.317 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-07T06:59:46.146' from MJD-BEG.
+Set DATE-AVG to '2023-04-25T18:33:09.733' from MJD-AVG.
+Set DATE-END to '2024-01-07T03:45:43.738' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -143.021781 from OBSGEO-[XYZ].
+Set OBSGEO-B to     1.397977 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1266993810.076 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-07T06:25:03.269' from MJD-BEG.
+Set DATE-AVG to '2023-05-07T23:55:19.081' from MJD-AVG.
+Set DATE-END to '2024-01-07T03:10:28.604' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -137.160265 from OBSGEO-[XYZ].
+Set OBSGEO-B to    -1.671665 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1287298452.158 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-07T06:59:46.210' from MJD-BEG.
+Set DATE-AVG to '2023-05-08T00:30:00.279' from MJD-AVG.
+Set DATE-END to '2024-01-07T03:45:43.738' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -142.415115 from OBSGEO-[XYZ].
+Set OBSGEO-B to     1.086902 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1268876742.202 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-07T03:36:21.486' from MJD-BEG.
+Set DATE-AVG to '2023-04-14T13:22:31.782' from MJD-AVG.
+Set DATE-END to '2024-04-05T17:44:45.991' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -142.153198 from OBSGEO-[XYZ].
+Set OBSGEO-B to     0.952122 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1269704178.091 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-07T04:10:53.676' from MJD-BEG.
+Set DATE-AVG to '2023-04-15T03:03:17.934' from MJD-AVG.
+Set DATE-END to '2024-05-17T12:31:56.370' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -143.930743 from OBSGEO-[XYZ].
+Set OBSGEO-B to     1.861146 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1264258652.042 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-07T03:36:21.486' from MJD-BEG.
+Set DATE-AVG to '2023-04-17T23:00:27.763' from MJD-AVG.
+Set DATE-END to '2024-04-05T17:44:45.991' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -143.976088 from OBSGEO-[XYZ].
+Set OBSGEO-B to     1.884158 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1264124865.513 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-07T04:10:53.740' from MJD-BEG.
+Set DATE-AVG to '2023-04-18T21:51:26.962' from MJD-AVG.
+Set DATE-END to '2024-05-17T12:31:56.370' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -141.879026 from OBSGEO-[XYZ].
+Set OBSGEO-B to     0.810727 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1270579844.010 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-09T03:00:06.656' from MJD-BEG.
+Set DATE-AVG to '2023-04-11T08:12:43.066' from MJD-AVG.
+Set DATE-END to '2023-04-11T22:38:43.129' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -141.735757 from OBSGEO-[XYZ].
+Set OBSGEO-B to     0.736717 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1271041328.386 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-09T03:34:38.846' from MJD-BEG.
+Set DATE-AVG to '2023-04-11T08:47:21.119' from MJD-AVG.
+Set DATE-END to '2023-04-11T23:13:36.823' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -143.930743 from OBSGEO-[XYZ].
+Set OBSGEO-B to     1.861146 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1264258652.042 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-09T03:00:06.656' from MJD-BEG.
+Set DATE-AVG to '2023-04-11T03:24:13.512' from MJD-AVG.
+Set DATE-END to '2023-04-11T22:38:43.129' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -141.254312 from OBSGEO-[XYZ].
+Set OBSGEO-B to     0.487383 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1272611989.927 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-09T03:34:38.846' from MJD-BEG.
+Set DATE-AVG to '2023-04-11T03:58:51.487' from MJD-AVG.
+Set DATE-END to '2023-04-11T23:13:36.823' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -141.181879 from OBSGEO-[XYZ].
+Set OBSGEO-B to     0.449787 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1272850973.485 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-06T23:40:51.132' from MJD-BEG.
+Set DATE-AVG to '2023-04-10T11:22:19.996' from MJD-AVG.
+Set DATE-END to '2023-04-12T05:00:46.307' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -140.452025 from OBSGEO-[XYZ].
+Set OBSGEO-B to     0.069751 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1275298804.365 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-07T00:15:44.826' from MJD-BEG.
+Set DATE-AVG to '2023-04-10T11:57:01.963' from MJD-AVG.
+Set DATE-END to '2023-04-12T05:35:29.249' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -140.789761 from OBSGEO-[XYZ].
+Set OBSGEO-B to     0.245885 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1274157024.428 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-06T23:40:51.132' from MJD-BEG.
+Set DATE-AVG to '2023-04-10T15:55:38.280' from MJD-AVG.
+Set DATE-END to '2023-04-12T05:00:46.307' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -145.568417 from OBSGEO-[XYZ].
+Set OBSGEO-B to     2.686582 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1259582932.608 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-07T00:15:44.826' from MJD-BEG.
+Set DATE-AVG to '2023-04-10T16:30:20.132' from MJD-AVG.
+Set DATE-END to '2023-04-12T05:35:29.249' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -141.181879 from OBSGEO-[XYZ].
+Set OBSGEO-B to     0.449787 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1272850973.485 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T10:42:26.384' from MJD-BEG.
+Set DATE-AVG to '2023-04-12T16:21:14.858' from MJD-AVG.
+Set DATE-END to '2023-04-14T05:04:43.706' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -140.452025 from OBSGEO-[XYZ].
+Set OBSGEO-B to     0.069751 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1275298804.365 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T11:17:20.078' from MJD-BEG.
+Set DATE-AVG to '2023-04-12T16:55:53.761' from MJD-AVG.
+Set DATE-END to '2023-04-14T05:39:26.648' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -140.426399 from OBSGEO-[XYZ].
+Set OBSGEO-B to     0.056367 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1275386082.682 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T10:42:26.384' from MJD-BEG.
+Set DATE-AVG to '2023-04-12T14:51:45.428' from MJD-AVG.
+Set DATE-END to '2023-04-14T05:04:43.706' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -136.932404 from OBSGEO-[XYZ].
+Set OBSGEO-B to    -1.793876 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1288191492.311 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T11:17:20.078' from MJD-BEG.
+Set DATE-AVG to '2023-04-12T15:26:25.192' from MJD-AVG.
+Set DATE-END to '2023-04-14T05:39:26.648' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -140.114413 from OBSGEO-[XYZ].
+Set OBSGEO-B to    -0.106790 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1276456015.366 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T20:58:30.052' from MJD-BEG.
+Set DATE-AVG to '2023-12-20T22:44:33.719' from MJD-AVG.
+Set DATE-END to '2024-04-05T16:23:39.052' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.189184 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.874059 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1689898479.544 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T21:33:02.306' from MJD-BEG.
+Set DATE-AVG to '2023-12-20T23:19:14.626' from MJD-AVG.
+Set DATE-END to '2024-04-05T16:58:21.994' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.239510 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.885159 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1689330121.633 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T20:58:30.116' from MJD-BEG.
+Set DATE-AVG to '2023-11-28T13:21:51.308' from MJD-AVG.
+Set DATE-END to '2024-04-05T16:23:39.052' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.189184 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.874059 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1689898478.443 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T21:33:02.306' from MJD-BEG.
+Set DATE-AVG to '2023-11-28T13:56:31.857' from MJD-AVG.
+Set DATE-END to '2024-04-05T16:58:22.058' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.240054 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.885290 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1689323928.314 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T19:20:50.610' from MJD-BEG.
+Set DATE-AVG to '2024-01-13T19:58:41.254' from MJD-AVG.
+Set DATE-END to '2024-04-07T16:38:17.459' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -141.801222 from OBSGEO-[XYZ].
+Set OBSGEO-B to    -1.152473 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1278613210.556 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T19:55:22.800' from MJD-BEG.
+Set DATE-AVG to '2024-01-14T18:18:24.594' from MJD-AVG.
+Set DATE-END to '2024-04-07T17:12:49.649' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.514690 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.979431 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1685687438.495 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T19:20:50.610' from MJD-BEG.
+Set DATE-AVG to '2023-12-28T10:40:20.993' from MJD-AVG.
+Set DATE-END to '2024-04-07T16:38:17.459' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.504555 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.891407 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1695703620.187 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T19:55:22.800' from MJD-BEG.
+Set DATE-AVG to '2023-12-28T08:42:49.419' from MJD-AVG.
+Set DATE-END to '2024-04-07T17:12:49.713' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -142.415115 from OBSGEO-[XYZ].
+Set OBSGEO-B to     1.086902 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1268876742.202 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T20:58:30.052' from MJD-BEG.
+Set DATE-AVG to '2023-12-05T00:48:43.596' from MJD-AVG.
+Set DATE-END to '2024-01-06T14:01:01.738' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.199846 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.876254 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1689778862.210 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T21:33:02.306' from MJD-BEG.
+Set DATE-AVG to '2023-12-04T06:34:06.499' from MJD-AVG.
+Set DATE-END to '2024-01-06T14:20:21.289' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.253978 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.888698 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1689165135.984 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T20:58:30.116' from MJD-BEG.
+Set DATE-AVG to '2023-12-02T20:54:02.643' from MJD-AVG.
+Set DATE-END to '2024-01-06T14:01:01.674' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.551766 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.881365 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1695462140.490 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T21:33:02.306' from MJD-BEG.
+Set DATE-AVG to '2023-12-11T10:02:45.068' from MJD-AVG.
+Set DATE-END to '2024-04-17T14:08:26.584' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.240054 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.885290 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1689323928.314 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-12-27T21:50:37.563' from MJD-BEG.
+Set DATE-AVG to '2024-01-11T09:18:21.208' from MJD-AVG.
+Set DATE-END to '2024-04-17T15:32:40.723' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.176478 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.991008 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1696578874.448 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-12-27T22:25:09.753' from MJD-BEG.
+Set DATE-AVG to '2024-01-29T04:08:34.588' from MJD-AVG.
+Set DATE-END to '2024-04-17T16:07:23.665' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -126.457534 from OBSGEO-[XYZ].
+Set OBSGEO-B to   -10.115093 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1378711210.483 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-12-27T21:50:37.563' from MJD-BEG.
+Set DATE-AVG to '2024-01-09T07:35:46.564' from MJD-AVG.
+Set DATE-END to '2024-04-17T15:32:40.723' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.551766 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.881365 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1695462140.490 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-12-27T22:25:09.817' from MJD-BEG.
+Set DATE-AVG to '2024-01-23T15:37:49.317' from MJD-AVG.
+Set DATE-END to '2024-04-17T16:07:23.665' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.392582 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.930477 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1687564443.398 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-12-27T21:50:37.563' from MJD-BEG.
+Set DATE-AVG to '2024-01-03T15:28:30.908' from MJD-AVG.
+Set DATE-END to '2024-04-07T15:10:09.144' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.121513 from OBSGEO-[XYZ].
+Set OBSGEO-B to     9.012550 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1696582340.877 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-12-27T22:25:09.753' from MJD-BEG.
+Set DATE-AVG to '2024-01-03T16:03:09.144' from MJD-AVG.
+Set DATE-END to '2024-04-07T15:44:52.086' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.173710 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.992061 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1696580056.639 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-12-27T21:50:37.563' from MJD-BEG.
+Set DATE-AVG to '2024-01-04T06:10:45.229' from MJD-AVG.
+Set DATE-END to '2024-04-07T15:10:09.208' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.138828 from OBSGEO-[XYZ].
+Set OBSGEO-B to     9.005617 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1696585803.903 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-12-27T22:25:09.817' from MJD-BEG.
+Set DATE-AVG to '2024-01-04T06:45:23.298' from MJD-AVG.
+Set DATE-END to '2024-04-07T15:44:52.150' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.467670 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.959010 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1686696035.662 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-12-28T00:31:10.002' from MJD-BEG.
+Set DATE-AVG to '2024-01-04T19:49:42.681' from MJD-AVG.
+Set DATE-END to '2024-04-07T16:23:04.756' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.138828 from OBSGEO-[XYZ].
+Set OBSGEO-B to     9.005617 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1696585803.895 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-12-28T01:05:42.192' from MJD-BEG.
+Set DATE-AVG to '2024-01-04T20:24:21.657' from MJD-AVG.
+Set DATE-END to '2024-04-07T16:57:26.258' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.490128 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.968752 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1685971461.835 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-12-28T00:31:10.002' from MJD-BEG.
+Set DATE-AVG to '2024-01-07T02:42:25.327' from MJD-AVG.
+Set DATE-END to '2024-04-07T16:23:04.756' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.518019 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.888427 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1695637594.588 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-12-28T01:05:42.256' from MJD-BEG.
+Set DATE-AVG to '2024-01-07T03:17:04.845' from MJD-AVG.
+Set DATE-END to '2024-04-07T16:57:26.258' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -141.847183 from OBSGEO-[XYZ].
+Set OBSGEO-B to    -1.127172 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1278402912.255 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T19:26:17.065' from MJD-BEG.
+Set DATE-AVG to '2023-06-26T14:00:50.458' from MJD-AVG.
+Set DATE-END to '2024-04-23T13:15:45.700' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.300482 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.947437 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1696417599.328 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T20:00:49.319' from MJD-BEG.
+Set DATE-AVG to '2023-06-25T00:51:28.541' from MJD-AVG.
+Set DATE-END to '2024-04-05T16:58:21.994' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -149.747398 from OBSGEO-[XYZ].
+Set OBSGEO-B to     4.737340 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1249045326.390 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T19:26:17.129' from MJD-BEG.
+Set DATE-AVG to '2023-06-23T04:25:20.460' from MJD-AVG.
+Set DATE-END to '2024-04-23T13:15:45.700' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.292951 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.949883 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1696433383.567 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T20:00:49.319' from MJD-BEG.
+Set DATE-AVG to '2023-06-20T16:19:48.063' from MJD-AVG.
+Set DATE-END to '2024-04-05T16:58:22.058' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -121.696414 from OBSGEO-[XYZ].
+Set OBSGEO-B to   -10.478127 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1373213329.829 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T19:26:17.065' from MJD-BEG.
+Set DATE-AVG to '2023-09-27T11:03:01.111' from MJD-AVG.
+Set DATE-END to '2024-04-23T13:15:45.700' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -126.340064 from OBSGEO-[XYZ].
+Set OBSGEO-B to   -10.186092 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1379678684.759 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T20:00:49.319' from MJD-BEG.
+Set DATE-AVG to '2023-09-23T12:48:17.655' from MJD-AVG.
+Set DATE-END to '2024-04-17T17:26:55.244' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -150.109317 from OBSGEO-[XYZ].
+Set OBSGEO-B to     4.910965 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1248223958.472 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T19:26:17.129' from MJD-BEG.
+Set DATE-AVG to '2023-09-15T03:11:48.065' from MJD-AVG.
+Set DATE-END to '2024-04-23T13:15:45.700' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.207147 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.877806 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1689696703.676 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-01-05T20:00:49.319' from MJD-BEG.
+Set DATE-AVG to '2023-09-12T22:56:59.809' from MJD-AVG.
+Set DATE-END to '2024-04-17T17:26:55.244' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.212276 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.878920 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1689638854.378 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T11:44:49.229' from MJD-BEG.
+Set DATE-AVG to '2023-12-26T22:27:58.236' from MJD-AVG.
+Set DATE-END to '2024-04-17T18:10:49.417' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.170781 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.993178 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1696581191.179 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T12:19:42.859' from MJD-BEG.
+Set DATE-AVG to '2023-12-30T12:27:34.976' from MJD-AVG.
+Set DATE-END to '2024-04-17T18:45:43.111' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.184778 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.987874 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1696574692.202 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T11:44:49.293' from MJD-BEG.
+Set DATE-AVG to '2023-12-14T20:49:16.981' from MJD-AVG.
+Set DATE-END to '2024-04-17T18:10:49.481' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.314340 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.943006 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1696386552.705 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T12:19:42.923' from MJD-BEG.
+Set DATE-AVG to '2023-12-19T23:01:52.074' from MJD-AVG.
+Set DATE-END to '2024-04-17T18:45:43.111' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -126.362898 from OBSGEO-[XYZ].
+Set OBSGEO-B to   -10.172290 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1379490445.596 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T11:44:49.229' from MJD-BEG.
+Set DATE-AVG to '2024-01-06T11:25:44.405' from MJD-AVG.
+Set DATE-END to '2024-04-17T18:10:49.417' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.470998 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.960368 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1686657736.922 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T12:19:42.859' from MJD-BEG.
+Set DATE-AVG to '2024-01-06T15:35:14.655' from MJD-AVG.
+Set DATE-END to '2024-04-17T18:45:43.111' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.174310 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.991832 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1696579809.409 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T11:44:49.293' from MJD-BEG.
+Set DATE-AVG to '2023-12-28T05:43:52.567' from MJD-AVG.
+Set DATE-END to '2024-04-17T18:10:49.481' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.282615 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.953282 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1696453797.459 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'datfix' made the change 'Set DATE-BEG to '2023-04-10T12:19:42.923' from MJD-BEG.
+Set DATE-AVG to '2023-12-27T20:54:02.320' from MJD-AVG.
+Set DATE-END to '2024-04-17T18:45:43.111' from MJD-END'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -141.847183 from OBSGEO-[XYZ].
+Set OBSGEO-B to    -1.127172 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1278402912.255 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/make_cutouts.py:200: RuntimeWarning: cdelt will be ignored since cd is present
+  pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+WARNING: FITSFixedWarning: RADECSYS= 'FK5 ' 
+the RADECSYS keyword is deprecated, use RADESYSa. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: RADECSYS= 'FK5 ' 
+the RADECSYS keyword is deprecated, use RADESYSa. [astropy.wcs.wcs]

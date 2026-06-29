@@ -1,0 +1,36 @@
+=== /n17data HSC / Subaru ===
+
+=== /n17data UltraVista ===
+
+=== /n23data2 ground-based ===
+/automnt/n23data2/hjmcc/cosmos/forfitsmap-cosmos/UVISTA_Ks_19_11_18_allpaw_skysub_015_dr4_rc_v2.fits
+/automnt/n23data2/hjmcc/cosmos/UVISTA_Ks_19_11_18_allpaw_skysub_015_dr4_rc_v2.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/APR23/gal_clustering/COSMOSWeb_randomcat_finalmaskJWST+HSC_APR23+JAN23_v2_skycoords.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A1/cutout-HSC-G-9813-pdr3_dud_rev-230412-135737_sci_zp-28.09_A1_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A1/cutout-HSC-R-9813-pdr3_dud_rev-230413-121613_sci_zp-28.09_A1_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A1/cutout-HSC-I-9813-pdr3_dud_rev-230413-121625_sci_zp-28.09_A1_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A1/cutout-HSC-Z-9813-pdr3_dud_rev-230413-121629_sci_zp-28.09_A1_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A1/cutout-HSC-Y-9813-pdr3_dud_rev-230413-121631_sci_zp-28.09_A1_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A1/UVISTA_Y_12_07_22_allpaw_skysub_015_dr5_rc_v1_zp-28.09_A1_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A1/UVISTA_J_12_07_22_allpaw_skysub_015_dr5_rc_v1_zp-28.09_A1_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A1/UVISTA_H_12_07_22_allpaw_skysub_015_dr5_rc_v1_zp-28.09_A1_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A1/UVISTA_Ks_12_07_22_allpaw_skysub_015_dr5_rc_v1_zp-28.09_A1_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A1/UVISTA_NB118_12_07_22_allpaw_skysub_015_dr5_rc_v1_zp-28.09_A1_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A2/cutout-HSC-I-9813-pdr3_dud_rev-230413-121625_sci_zp-28.09_A2_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A2/cutout-HSC-R-9813-pdr3_dud_rev-230413-121613_sci_zp-28.09_A2_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A2/cutout-HSC-Y-9813-pdr3_dud_rev-230413-121631_sci_zp-28.09_A2_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A2/UVISTA_Y_12_07_22_allpaw_skysub_015_dr5_rc_v1_zp-28.09_A2_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A2/UVISTA_J_12_07_22_allpaw_skysub_015_dr5_rc_v1_zp-28.09_A2_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A2/UVISTA_H_12_07_22_allpaw_skysub_015_dr5_rc_v1_zp-28.09_A2_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A2/cutout-HSC-G-9813-pdr3_dud_rev-230412-135737_sci_zp-28.09_A2_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A2/cutout-HSC-Z-9813-pdr3_dud_rev-230413-121629_sci_zp-28.09_A2_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A2/UVISTA_Ks_12_07_22_allpaw_skysub_015_dr5_rc_v1_zp-28.09_A2_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A2/UVISTA_NB118_12_07_22_allpaw_skysub_015_dr5_rc_v1_zp-28.09_A2_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A3/cutout-HSC-G-9813-pdr3_dud_rev-230412-135737_sci_zp-28.09_A3_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A3/cutout-HSC-R-9813-pdr3_dud_rev-230413-121613_sci_zp-28.09_A3_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A3/cutout-HSC-I-9813-pdr3_dud_rev-230413-121625_sci_zp-28.09_A3_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A3/cutout-HSC-Z-9813-pdr3_dud_rev-230413-121629_sci_zp-28.09_A3_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A3/cutout-HSC-Y-9813-pdr3_dud_rev-230413-121631_sci_zp-28.09_A3_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A3/UVISTA_Y_12_07_22_allpaw_skysub_015_dr5_rc_v1_zp-28.09_A3_bkgonly.fits
+/automnt/n23data2/lpaquereau/COSMOSWeb/empty_aper/A3/UVISTA_J_12_07_22_allpaw_skysub_015_dr5_rc_v1_zp-28.09_A3_bkgonly.fits
+DONE

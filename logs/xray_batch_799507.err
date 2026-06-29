@@ -1,0 +1,294 @@
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.189184 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.874059 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1689898478.443 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (6203,6203) (10,10) 
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -136.932404 from OBSGEO-[XYZ].
+Set OBSGEO-B to    -1.793876 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1288191492.311 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.504555 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.891407 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1695703620.187 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (8000,8000) (10,10) 
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.138828 from OBSGEO-[XYZ].
+Set OBSGEO-B to     9.005617 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1696585803.903 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (6446,6446) (10,10) 
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.339828 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.935089 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1696322701.386 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to  -146.319405 from OBSGEO-[XYZ].
+Set OBSGEO-B to     3.061125 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1257543984.977 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.551766 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.881365 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1695462140.490 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (2053,2053) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (3893,3893) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (8000,8000) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (8000,8000) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (5133,5133) (10,10) 
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    96.207147 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.877806 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1689696703.676 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (6253,6253) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (3016,3016) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (3903,3903) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (3270,3270) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (4143,4143) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (5183,5183) (10,10) 
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.314340 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.943006 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1696386552.705 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (2000,2000) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (7490,7490) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (6270,6270) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (2413,2413) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (7816,7816) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (7956,7956) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (8000,8000) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (2330,2330) (10,10) 
+WARNING: FITSFixedWarning: 'obsfix' made the change 'Set OBSGEO-L to    95.292951 from OBSGEO-[XYZ].
+Set OBSGEO-B to     8.949883 from OBSGEO-[XYZ].
+Set OBSGEO-H to 1696433383.567 from OBSGEO-[XYZ]'. [astropy.wcs.wcs]
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (2773,2773) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (5690,5690) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (4693,4693) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (7653,7653) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (8000,8000) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (4696,4696) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (3416,3416) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (3080,3080) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (3366,3366) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (6040,6040) (10,10) 
+Traceback (most recent call last):
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 140, in <module>
+    process_group(gid, base/gid, out_path)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 71, in process_group
+    rgb = build_rgb(gdir, gid)
+  File "/automnt/n23data2/gozaliasl/cosmos-group-rgb-xray/scripts/batch_xray.py", line 39, in build_rgb
+    B = (np.clip(asinh(b,7)*0.62 + asinh(h_d*1.2,7)*0.32 + asinh(l*1.8,12)*0.06, 0, 1)
+ValueError: operands could not be broadcast together with shapes (2163,2163) (10,10) 
