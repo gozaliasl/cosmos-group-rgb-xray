@@ -47,15 +47,15 @@ DEFAULT_RADIUS_ARCMIN = 4.0
 # --------------------------------------------------------------------------- #
 
 def _get(row: Dict[str, str], *keys: str, default: str = "0") -> str:
-    """Return the first matching key from a CSV row (case-insensitive fallback)."""
+    """Return the first non-empty matching key from a CSV row (case-insensitive fallback)."""
     for k in keys:
-        if k in row:
-            return row[k]
-    # case-insensitive fallback
+        if k in row and row[k].strip():
+            return row[k].strip()
     lower = {kk.lower(): v for kk, v in row.items()}
     for k in keys:
-        if k.lower() in lower:
-            return lower[k.lower()]
+        v = lower.get(k.lower(), "")
+        if v.strip():
+            return v.strip()
     return default
 
 
