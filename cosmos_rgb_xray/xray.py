@@ -289,18 +289,24 @@ def overlay_xray(
             print("  X-ray: empty after reproject — skipping", file=sys.stderr)
         return rgb
 
-    # ── Noise floor + normalise ───────────────────────────────────────────────
-    noise_floor = np.percentile(smoothed[pos_mask], noise_floor_pct)
-    smoothed    = np.maximum(smoothed - noise_floor, 0.0) * cov
-
-    pos2 = smoothed[smoothed > 0]
-    if len(pos2) == 0:
+    # ── Normalise: peak → 1, background fades smoothly to 0 ─────────────────
+    # No hard noise-floor subtraction — let log compression map faint emission
+    # to low alpha naturally so color flows continuously from peak to background.
+    pos_vals = smoothed[pos_mask]
+    if len(pos_vals) == 0:
         return rgb
 
-    peak = np.percentile(pos2, 98.0)
-    k    = 8.0
+    # Use the noise_floor_pct percentile as the "zero" reference so genuine
+    # background noise sits at norm≈0, but we don't hard-clip it to zero.
+    bg   = np.percentile(pos_vals, noise_floor_pct)
+    peak = np.percentile(pos_vals, 99.0)
+    span = peak - bg + 1e-12
+
+    # Shift so background→0, peak→1, then log-compress to retain gradient
+    shifted = np.clip((smoothed - bg) / span, 0.0, 1.0) * cov
+    k    = 6.0
     norm = np.clip(
-        np.log1p(k * np.clip(smoothed / (peak + 1e-12), 0.0, 1.0)) / np.log1p(k),
+        np.log1p(k * shifted) / np.log1p(k),
         0.0, 1.0,
     ) * cov
 
