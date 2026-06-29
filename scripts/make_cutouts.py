@@ -215,7 +215,9 @@ def cut_and_save(
         return False
 
     data, wcs_obj = entry["data"], entry["wcs"]
-    pix_scale = abs(wcs_obj.wcs.cdelt[0]) * 3600.0   # arcsec/pixel
+    # Use pixel_scale_matrix so this works for both CDELT and CD-matrix WCS
+    import numpy as _np
+    pix_scale = float(_np.sqrt(abs(_np.linalg.det(wcs_obj.pixel_scale_matrix)))) * 3600.0
     size_pix  = max(int(size_arcsec / pix_scale), 10)
 
     coord = SkyCoord(ra=ra * u.deg, dec=dec * u.deg)
