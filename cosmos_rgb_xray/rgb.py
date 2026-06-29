@@ -218,6 +218,17 @@ def build_rgb_fits(
     if uvista_fill is not None:
         rgb = _blend_fill(rgb, uvista_fill)
 
+    # Adjust header WCS to match the north-up flip so overlay_xray reprojects correctly.
+    # Flipping rows means: CD2_2 negated, CRPIX2 mirrored.
+    if ref_hdr is not None:
+        ny = rgb.shape[0]
+        ref_hdr = ref_hdr.copy()
+        for key in ("CD2_2", "CDELT2"):
+            if key in ref_hdr:
+                ref_hdr[key] = -ref_hdr[key]
+        if "CRPIX2" in ref_hdr:
+            ref_hdr["CRPIX2"] = ny + 1 - ref_hdr["CRPIX2"]
+
     return rgb, ref_hdr
 
 
