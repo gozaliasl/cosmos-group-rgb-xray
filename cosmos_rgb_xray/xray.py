@@ -50,8 +50,12 @@ XRAY_SMALL = XRAY_DIR / "cosmos_chaxmm14_520_wv.3.fits"   # compact / wavelet
 
 
 def xray_color(redshift: float) -> Tuple[float, float, float]:
-    """Magenta for z<0.3 (low-z groups), cyan for z≥0.3 (higher-z)."""
-    return (0.85, 0.0, 1.0) if redshift < 0.3 else (0.0, 1.0, 1.0)
+    """
+    X-ray overlay colour by redshift:
+      z < 1.0  → magenta/pink  (0.85, 0.0, 1.0)  — matches reference images
+      z ≥ 1.0  → cyan          (0.0,  1.0, 1.0)  — high-z groups
+    """
+    return (0.85, 0.0, 1.0) if redshift < 1.0 else (0.0, 1.0, 1.0)
 
 
 def _xray_cmap(r: float, g: float, b: float) -> mcolors.LinearSegmentedColormap:
@@ -264,6 +268,15 @@ def overlay_xray(
 
     # ── Reproject onto RGB grid and mask to optical footprint ─────────────────
     raw = np.maximum(reproject_to(xdata, xhdr, ref_hdr), 0.0) * cov
+
+    # ── Fill point-source holes before smoothing ──────────────────────────────
+    # The "noem" large-scale map has zeros at excluded point-source positions.
+    # Replace those zeros with a local median so the Gaussian smooth does not
+    # leave dark voids in the X-ray halo.
+    from scipy.ndimage import median_filter as _med
+    if np.any(raw > 0):
+        raw = np.where(raw > 0, raw, _med(raw, size=15))
+        raw = np.maximum(raw, 0.0) * cov
 
     # ── Smooth (dual-pass: core structure + wide haze) ────────────────────────
     sc = gaussian_filter(raw, sigma=smooth_sigma)

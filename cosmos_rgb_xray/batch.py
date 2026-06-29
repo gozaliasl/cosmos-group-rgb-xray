@@ -35,7 +35,7 @@ from astropy.wcs import WCS
 import numpy as np
 from PIL import Image
 
-from .rgb import build_rgb, build_rgb_fits
+from .rgb import build_rgb, build_rgb_fits, build_rgb_trilogy
 from .xray import find_per_group_xray, overlay_xray
 
 # Cutout radius used when no per-group X-ray file exists
@@ -158,20 +158,20 @@ def xray_params(snr: float, cutout_arcsec: float = 240.0) -> Dict[str, Any]:
     if extended:
         return dict(
             use_small_scale=False,
-            smooth_sigma=60.0,
+            smooth_sigma=90.0,
             radius_arcmin=cutout_arcsec / 60.0,
-            alpha_peak=0.75,
-            norm_power=2.0,
-            noise_floor_pct=60.0,
+            alpha_peak=0.38,
+            norm_power=1.2,
+            noise_floor_pct=45.0,
         )
     else:
         return dict(
             use_small_scale=True,
-            smooth_sigma=15.0,
+            smooth_sigma=20.0,
             radius_arcmin=max(cutout_arcsec / 60.0, DEFAULT_RADIUS_ARCMIN),
-            alpha_peak=0.65,
-            norm_power=2.2,
-            noise_floor_pct=65.0,
+            alpha_peak=0.30,
+            norm_power=1.8,
+            noise_floor_pct=60.0,
         )
 
 
@@ -222,6 +222,8 @@ def process_group(
         from .stiff import build_rgb_stiff
         rgb, ref_hdr = build_rgb_stiff(group_dir, group_id,
                                        output_dir=output_dir, verbose=verbose)
+    elif rgb_method == "trilogy":
+        rgb, ref_hdr = build_rgb_trilogy(group_dir, str(group_id))
     elif rgb_method == "asinh":
         rgb, ref_hdr = build_rgb_fits(group_dir, str(group_id))
     else:
@@ -237,21 +239,33 @@ def process_group(
     # Per-group X-ray (WCS-validated)
     per_group = find_per_group_xray(group_dir, group_id, info["ra"], info["dec"], verbose=verbose)
 
-    # Overlay
+    # Overlay — use matplotlib so contours are drawn on the same axes
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    h_px, w_px = rgb.shape[:2]
+    fig, ax = plt.subplots(figsize=(w_px / 300, h_px / 300), dpi=300)
+    ax.axis("off")
+    fig.subplots_adjust(0, 0, 1, 1)
+
     rgb_xray = overlay_xray(
         rgb, ref_hdr,
         ra=ra, dec=dec,
         redshift=redshift,
         per_group_xray=per_group,
         verbose=verbose,
+        ax=ax,
         **xp,
     )
 
-    # Save
-    arr = np.clip(rgb_xray, 0, 1)
+    ax.imshow(rgb_xray, origin="upper", interpolation="nearest")
+
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if annotate:
+        plt.close(fig)
+        arr = np.clip(rgb_xray, 0, 1)
         from .annotate import annotate_and_save
         annotate_and_save(
             arr, ref_hdr, out_png,
@@ -262,24 +276,18 @@ def process_group(
             verbose=verbose,
         )
     else:
-        from PIL import Image
-        max_px = info.get("max_px", 4000)
-        h, w   = arr.shape[:2]
-        if max(h, w) > max_px:
-            scale = max_px / max(h, w)
-            img_rs = Image.fromarray((arr * 255).astype(np.uint8)).resize(
-                (int(w * scale), int(h * scale)), Image.LANCZOS)
-            arr = np.asarray(img_rs, dtype=np.float32) / 255.0
-        img8 = Image.fromarray((arr * 255).astype(np.uint8))
-        img8.save(out_png, dpi=(300, 300), optimize=True)
+        # Save via matplotlib so contour lines drawn on ax are included
+        fig.savefig(out_png, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close(fig)
+        if save_tiff:
+            from PIL import Image
+            out_tiff = out_png.with_suffix(".tiff")
+            Image.open(out_png).save(out_tiff, compression="tiff_lzw", dpi=(300, 300))
+            if verbose:
+                print(f"  [{group_id}] TIFF → {out_tiff}", flush=True)
         if verbose:
             sz = out_png.stat().st_size / 1e6
             print(f"  [{group_id}] PNG  → {out_png}  ({sz:.1f} MB)", flush=True)
-        if save_tiff:
-            out_tiff = out_png.with_suffix(".tiff")
-            img8.save(out_tiff, compression="tiff_lzw", dpi=(300, 300))
-            if verbose:
-                print(f"  [{group_id}] TIFF → {out_tiff}", flush=True)
 
     if verbose:
         print(f"  [{group_id}] done", flush=True)
@@ -359,7 +367,7 @@ def main() -> None:
     p.add_argument("--jobs",       type=int, default=1)
     p.add_argument("--overwrite",  action="store_true")
     p.add_argument("--verbose",    action="store_true")
-    p.add_argument("--rgb-method", choices=["asinh", "stiff"], default="asinh",
+    p.add_argument("--rgb-method", choices=["asinh", "trilogy", "stiff"], default="asinh",
                    help="RGB stretching method: asinh+CLAHE (default) or STIFF (Bertin)")
     p.add_argument("--tiff", action="store_true", dest="save_tiff",
                    help="Also save 16-bit LZW-compressed TIFF alongside PNG")

@@ -269,6 +269,14 @@ def build_rgb_fits(
     G = np.clip(G * (1.0 - 0.10 * np.exp(-0.5 * ((G - 0.30) / 0.20)**2)), 0, 1)
 
     rgb = np.clip(np.stack([R, G, B], axis=-1) + [0.002, 0.002, 0.022], 0, 1)
+
+    # Soft tone-curve boost: lifts faint structure without tiling artifacts.
+    # Equivalent to a mild gamma < 1 in the mid-tones, preserving black sky.
+    rgb = np.where(rgb > 0.02,
+                   0.02 + (rgb - 0.02) ** 0.82,
+                   rgb).astype(np.float32)
+    rgb = np.clip(rgb, 0, 1)
+
     rgb = rgb[::-1, :, :].astype(np.float32)  # flip north-up
 
     # Fill JWST zero-coverage gaps with UltraVista ground-based NIR if available
@@ -283,6 +291,104 @@ def build_rgb_fits(
     if ref_hdr is not None:
         ny_px, nx_px = rgb.shape[:2]
         scratch_hdr = _scratch_wcs_from_fits(ref_hdr, ny_px, nx_px)
+
+    return rgb, scratch_hdr
+
+
+# ── Trilogy RGB pipeline ─────────────────────────────────────────────────────
+
+def build_rgb_trilogy(
+    group_dir: Path,
+    group_id: str,
+    noiselum: float = 0.10,
+    satpercent: float = 0.001,
+    colorsatfac: float = 1.0,
+) -> Tuple[Optional[np.ndarray], Optional[fits.Header]]:
+    """
+    Build a float32 H×W×3 RGB array using the Trilogy colour pipeline.
+
+    Trilogy uses asinh stretch tuned by sampling the noise floor — the same
+    algorithm used to make the reference COSMOS-Web colour images.
+
+    Band assignment: R=F444W, G=F277W, B=F115W.
+    F150W is added to both R and G channels for luminance.
+
+    Returns (float32 H×W×3 in [0,1], scratch WCS header) or (None, None).
+    """
+    import tempfile, os
+    from PIL import Image as _Image
+
+    # ── Locate FITS files ─────────────────────────────────────────────────────
+    def _p(name: str) -> Optional[Path]:
+        p = group_dir / f"{group_id}_{name}.fits"
+        return p if p.exists() else None
+
+    f115 = _p("F115W")
+    f150 = _p("F150W")
+    f277 = _p("F277W")
+    f444 = _p("F444W")
+
+    if any(x is None for x in (f115, f150, f277, f444)):
+        return None, None
+
+    # Read ref header for scratch WCS
+    ref_hdr: Optional[fits.Header] = None
+    with fits.open(f115, memmap=False) as h:
+        ref_hdr = h[0].header.copy()
+
+    # ── Run Trilogy in a temp directory ───────────────────────────────────────
+    with tempfile.TemporaryDirectory() as tmpdir:
+        outname = os.path.join(tmpdir, "trilogy_rgb")
+
+        try:
+            from trilogy import Trilogy
+        except ImportError:
+            return None, None
+
+        t = Trilogy(
+            outname=outname,
+            noiselum=noiselum,
+            satpercent=satpercent,
+            colorsatfac=colorsatfac,
+            testfirst=0,
+            show=0,
+            deletetests=1,
+        )
+        # Set band → channel mapping directly (bypass imagesorder bug)
+        # Band mapping: add F814W (HST) to blue channel when available —
+        # it adds optical blue that makes galaxies look natural rather than
+        # greenish (NIR-only gives yellow-green tones).
+        f814 = _p("F814W")
+        b_bands = [str(f115)]
+        if f814 is not None:
+            # Only add HST if it has the same footprint as the JWST bands
+            with fits.open(f814, memmap=False) as _h:
+                _sh = _h[0].data.shape[-2:]
+            with fits.open(f115, memmap=False) as _h:
+                _sh2 = _h[0].data.shape[-2:]
+            if _sh == _sh2:
+                b_bands.append(str(f814))
+        t.imagesRGB["R"] = [str(f444)]
+        t.imagesRGB["G"] = [str(f277)]
+        t.imagesRGB["B"] = b_bands
+        t.mode = "RGB"
+        t.run()
+
+        # Trilogy saves <outname>.png
+        out_png = outname + ".png"
+        if not os.path.exists(out_png):
+            return None, None
+
+        img = _Image.open(out_png).convert("RGB")
+        rgb = np.asarray(img, dtype=np.float32) / 255.0
+
+    # North-up flip + sky floor (slight blue boost gives natural deep-field look)
+    rgb = rgb[::-1, :, :].astype(np.float32)
+    rgb = np.clip(rgb + [0.001, 0.001, 0.018], 0, 1)
+
+    # Scratch WCS
+    ny_px, nx_px = rgb.shape[:2]
+    scratch_hdr = _scratch_wcs_from_fits(ref_hdr, ny_px, nx_px) if ref_hdr is not None else None
 
     return rgb, scratch_hdr
 
