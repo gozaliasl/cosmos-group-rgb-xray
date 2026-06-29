@@ -46,6 +46,7 @@ OVERWRITE="${OVERWRITE:-0}"
 ANNOTATE="${ANNOTATE:-0}"
 TIFF="${TIFF:-0}"
 MAX_PX="${MAX_PX:-4000}"
+RGB_METHOD="${RGB_METHOD:-trilogy}"
 
 # ── Build optional flags ──────────────────────────────────────────────────────
 EXTRA_FLAGS=""
@@ -78,11 +79,12 @@ for SAMPLE in $SAMPLES; do
     echo "── $SAMPLE ── $N groups → $OUT_DIR"
 
     python -m cosmos_rgb_xray.batch \
-        --catalog    "$CATALOG"  \
-        --data-root  "$DATA_DIR" \
-        --output-dir "$OUT_DIR"  \
-        --jobs       "$JOBS"     \
-        --max-px     "$MAX_PX"   \
+        --catalog    "$CATALOG"      \
+        --data-root  "$DATA_DIR"     \
+        --output-dir "$OUT_DIR"      \
+        --jobs       "$JOBS"         \
+        --max-px     "$MAX_PX"       \
+        --rgb-method "$RGB_METHOD"   \
         --verbose    \
         $EXTRA_FLAGS
 
