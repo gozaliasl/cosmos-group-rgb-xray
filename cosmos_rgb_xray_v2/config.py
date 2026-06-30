@@ -62,18 +62,18 @@ class XrayConfig:
     fill_holes: bool = True
     fill_kernel: int = 15
     # Normalization
-    bg_percentile: float = 58.0           # background reference percentile
+    bg_percentile: float = 0.0            # no background subtraction — preserve calibrated science mosaic values
     norm_power: float = 1.0               # post-log power
     # Display
     alpha_peak_extended: float = 0.55
     alpha_peak_compact: float = 0.40
     # Contours
-    contour_levels: Tuple[float, ...] = (0.20, 0.38, 0.62, 0.85)
+    contour_levels: Tuple[float, ...] = (0.30, 0.50, 0.72, 0.88)
     contour_linewidths: Tuple[float, ...] = (0.7, 0.9, 1.1, 1.3)
     contour_alpha: float = 0.85
     # No-contour version uses heavier smoothing
     nocontour_smooth_factor: float = 1.2
-    nocontour_bg_percentile: float = 52.0
+    nocontour_bg_percentile: float = 0.0
 
 
 @dataclass

@@ -157,7 +157,7 @@ def process_group_v2(
             import numpy as np
             from scipy.ndimage import gaussian_filter
             # Color balance: reduce NIR green cast, boost blue for navy background
-            rgb = np.clip(rgb * np.array([1.06, 0.65, 1.45], dtype=np.float32), 0, 1)
+            rgb = np.clip(rgb * np.array([0.98, 0.65, 1.45], dtype=np.float32), 0, 1)
             # Unsharp mask: gentle sharpening to enhance galaxy structure
             # sigma=1.5px, amount=0.20 — subtle, avoids noise amplification
             blurred = gaussian_filter(rgb, sigma=[1.5, 1.5, 0])

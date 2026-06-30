@@ -76,7 +76,8 @@ warnings.filterwarnings("ignore", category=UserWarning, module="astropy")
 
 # ── Default mosaic paths (Candide) — all overridable via CLI ─────────────────
 DEFAULT_JWST_DIR    = Path("/n23data2/cosmosweb/COSMOS-Web_Jan24/NIRCam/v0.8")
-DEFAULT_HST_DIR     = Path("/n17data/shuntov/COSMOS-Web/Images_HST-ACS/Jan24Tiles")
+DEFAULT_HST_DIR     = Path("/n23data2/cosmosweb/COSMOS-Web_Jan24/ACS")
+DEFAULT_HST_DIR_APR = Path("/n23data2/cosmosweb/COSMOS-Web_Apr23/ACS")
 DEFAULT_CLUTCH_DIR  = Path("/n23data1/sharish/hst/mosaics")   # CLUTCH HST bands
 DEFAULT_XRAY_DIR    = Path("/n23data2/gozaliasl/xray_maps")
 DEFAULT_UVISTA_DIR  = Path("/automnt/n23data1/UltraVista/DR4-RC2")
@@ -154,9 +155,17 @@ def jwst_mosaic_path(filter_name: str, tile: str, res: int = 30,
 
 def hst_mosaic_path(tile: str, res: int = 30,
                     hst_dir: Path = DEFAULT_HST_DIR) -> Path:
-    return hst_dir / (
-        f"mosaic_cosmos_web_2024jan_{res}mas_tile_{tile}_hst_acs_wfc_f814w_drz_zp-28.09.fits"
-    )
+    """Return path to F814W mosaic, trying Jan24 then Apr23 tile locations."""
+    # Jan24 tiles (A and B series)
+    jan24 = hst_dir / f"mosaic_cosmos_web_2024jan_{res}mas_tile_{tile}_hst_acs_wfc_f814w_drz_zp-28.09.fits"
+    if jan24.exists():
+        return jan24
+    # Apr23 tiles — same filename convention, different base dir
+    apr23 = DEFAULT_HST_DIR_APR / f"mosaic_cosmos_web_2023apr_{res}mas_tile_{tile}_hst_acs_wfc_f814w_drz_zp-28.09.fits"
+    if apr23.exists():
+        return apr23
+    # Return Jan24 path as default (will be flagged as not found by caller)
+    return jan24
 
 
 def clutch_mosaic_path(filter_name: str, tile: str, res: int = 30,

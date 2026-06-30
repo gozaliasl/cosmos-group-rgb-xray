@@ -119,19 +119,29 @@ def overlay_xray_v2(
         if not np.any(xdata > 0):
             return rgb
 
-    # Reproject + mask
-    raw = np.maximum(reproject_to(xdata, xhdr, ref_hdr), 0.0) * cov
+    # Reproject — do NOT multiply by cov yet: internal star masks in the
+    # optical coverage mask (5-6% of pixels) would create X-ray black holes.
+    raw = np.maximum(reproject_to(xdata, xhdr, ref_hdr), 0.0)
 
-    # Fill point-source holes
-    from scipy.ndimage import median_filter as _med
+    # Inpaint X-ray point-source holes (zeros in the X-ray map itself).
+    # Multi-scale iterative fill so dense mask clusters are filled correctly.
     if np.any(raw > 0):
-        raw = np.where(raw > 0, raw, _med(raw, size=15))
-        raw = np.maximum(raw, 0.0) * cov
+        filled = raw.copy()
+        for fsig in (60.0, 150.0, 350.0):
+            still_zero = filled <= 0
+            if not np.any(still_zero):
+                break
+            valid = (filled > 0).astype(np.float64)
+            num = gaussian_filter(filled * valid, sigma=fsig, truncate=4.0)
+            den = gaussian_filter(valid,          sigma=fsig, truncate=4.0)
+            interp = np.where(den > 0.01, num / den, 0.0)
+            filled = np.where(filled > 0, filled, interp)
+        raw = np.maximum(filled, 0.0)
 
-    # Smooth — use truncate=3 to limit kernel to 3σ and avoid edge pull-down
+    # Smooth — no cov multiplication so star-mask holes don't create dips
     sc = gaussian_filter(raw, sigma=smooth_sigma, truncate=3.0)
     sh = gaussian_filter(raw, sigma=smooth_haze_sigma, truncate=3.0)
-    smoothed = (sc + smooth_haze_weight * sh) * cov
+    smoothed = sc + smooth_haze_weight * sh
 
     pos_mask = smoothed > 0
     if not np.any(pos_mask):
@@ -142,33 +152,48 @@ def overlay_xray_v2(
     bg   = np.percentile(pos_vals, noise_floor_pct)
     peak = np.percentile(pos_vals, 99.0)
     span = peak - bg + 1e-12
-    shifted = np.clip((smoothed - bg) / span, 0.0, 1.0) * cov
+    shifted = np.clip((smoothed - bg) / span, 0.0, 1.0)
 
     k    = 6.0
-    norm = np.clip(np.log1p(k * shifted) / np.log1p(k), 0.0, 1.0) * cov
+    norm = np.clip(np.log1p(k * shifted) / np.log1p(k), 0.0, 1.0)
 
     # V2 RGBA colormap — cmap alpha ∈ [0,1] scaled by alpha_peak so the
     # final peak alpha == alpha_peak (controls overall X-ray opacity)
     r_c, g_c, b_c = xray_color(redshift)
     cmap = _xray_cmap_v2(r_c, g_c, b_c)
     xray_rgba = cmap(norm ** norm_power)
-    xray_rgba[..., 3] = np.clip(xray_rgba[..., 3] * alpha_peak * cov, 0.0, 1.0)
+    xray_rgba[..., 3] = np.clip(xray_rgba[..., 3] * alpha_peak, 0.0, 1.0)
 
-    # Restrict fill to the largest connected X-ray component to suppress
-    # isolated point-source blobs from other cluster/AGN in the field
+    # Define fill region as where X-ray is above the noise floor.
+    # Use norm ≥ 0.05 to show the full halo down to near-background level.
+    # Isolated blobs from other AGN/clusters are suppressed by taking the
+    # largest connected component at a higher threshold and expanding it.
     from skimage.measure import label as _label
-    from scipy.ndimage import distance_transform_edt as _dist
-    # Fill only the main cluster body (norm ≥ 0.35 ≈ 2nd contour level).
-    # Outer faint emission (norm 0.22–0.35) is shown as contour lines only,
-    # not filled — this avoids the dark outer halo on the black background.
-    fill_mask = norm >= 0.35
-    if np.any(fill_mask):
-        lbl = _label(fill_mask)
+    from scipy.ndimage import distance_transform_edt as _dist, binary_fill_holes as _fill_holes
+    # Find largest component at a higher threshold to identify the main cluster
+    seed_mask = norm >= 0.30
+    if np.any(seed_mask):
+        lbl = _label(seed_mask)
         largest = np.argmax(np.bincount(lbl.ravel())[1:]) + 1
-        fill_mask = (lbl == largest)
+        seed_mask = (lbl == largest)
+    # Expand fill to full low-norm region but only within reach of the main component
+    fill_mask = norm >= 0.05
+    # Keep only the connected low-norm region that overlaps the main cluster
+    lbl2 = _label(fill_mask)
+    if np.any(seed_mask):
+        main_id = lbl2[seed_mask][0] if lbl2[seed_mask].any() else 0
+        fill_mask = (lbl2 == main_id) if main_id > 0 else fill_mask
 
-    # Smooth feather at fill boundary: fade alpha over 120 px
-    dist_in = _dist(fill_mask).astype(np.float32)
+    # Fill internal holes (point-source masks, chip gaps) before computing
+    # feather distances so internal voids don't create black spots.
+    # Use morphological closing first so holes that touch the image edge are
+    # also enclosed, then fill all remaining interior holes.
+    from scipy.ndimage import binary_closing as _close
+    fill_mask_closed = _close(fill_mask, iterations=30)
+    fill_mask_solid = _fill_holes(fill_mask_closed)
+
+    # Smooth feather at outer fill boundary: fade alpha over 120 px
+    dist_in = _dist(fill_mask_solid).astype(np.float32)
     feather  = np.clip(dist_in / 120.0, 0.0, 1.0)
     xray_rgba[..., 3] *= feather
 
@@ -178,7 +203,9 @@ def overlay_xray_v2(
 
     # Contours
     if show_contours and ax is not None and len(contour_levels) > 0:
-        norm_c = gaussian_filter(norm, sigma=12.0) * cov
+        # Use heavy smoothing for contours to suppress Poisson noise and
+        # point-source fluctuations that create many tiny closed loops.
+        norm_c = gaussian_filter(norm, sigma=40.0)
         if norm_c.max() > 0:
             norm_c = norm_c / norm_c.max()
         pink_shades = ["#FFB6C1", "#FF69B4", "#FF1493", "#C71585"]
@@ -187,6 +214,9 @@ def overlay_xray_v2(
             if lvl >= norm_c.max():
                 continue
             mask = _largest_component_mask(norm_c * cov, lvl)
+            # Fill holes inside the contour region so inner boundaries
+            # (point-source dips, chip gaps) don't trace as small closed loops.
+            mask = _fill_holes(mask)
             col  = pink_shades[min(i, len(pink_shades) - 1)]
             ax.contour(mask, levels=[0.5], colors=[col],
                        linewidths=[lws[i]], alpha=contour_alpha, zorder=3)

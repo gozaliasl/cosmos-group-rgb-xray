@@ -361,13 +361,17 @@ def build_rgb_trilogy(
         f814 = _p("F814W")
         b_bands = [str(f115)]
         if f814 is not None:
-            # Only add HST if it has the same footprint as the JWST bands
-            with fits.open(f814, memmap=False) as _h:
-                _sh = _h[0].data.shape[-2:]
-            with fits.open(f115, memmap=False) as _h:
-                _sh2 = _h[0].data.shape[-2:]
-            if _sh == _sh2:
-                b_bands.append(str(f814))
+            # Only add HST if readable and has the same footprint as JWST bands
+            try:
+                with fits.open(f814, memmap=False) as _h:
+                    _sh = _h[0].data.shape[-2:]
+                with fits.open(f115, memmap=False) as _h:
+                    _sh2 = _h[0].data.shape[-2:]
+                if _sh == _sh2:
+                    b_bands.append(str(f814))
+            except Exception as _e:
+                import warnings
+                warnings.warn(f"F814W skipped (unreadable): {_e}")
         t.imagesRGB["R"] = [str(f444)]
         t.imagesRGB["G"] = [str(f277)]
         t.imagesRGB["B"] = b_bands
