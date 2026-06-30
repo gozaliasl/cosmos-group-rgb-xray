@@ -153,6 +153,12 @@ def process_group_v2(
     # Build RGB — trilogy uses v1's proven pipeline; ghs uses v2's GHS stretch
     if rgb_method == "trilogy":
         rgb, ref_hdr = build_rgb_trilogy(group_dir, str(group_id))
+        if rgb is not None:
+            # F277W→G is bright in NIR-only fields; reduce green to remove
+            # the yellowish-green cast without affecting galaxy morphology
+            import numpy as np
+            rgb = np.clip(rgb * np.array([1.12, 0.65, 1.45], dtype=np.float32),
+                          0, 1)
     else:
         rgb, ref_hdr = build_rgb_v2(group_dir, str(group_id), cfg=cfg, verbose=verbose)
 
