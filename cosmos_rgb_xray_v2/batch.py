@@ -154,11 +154,14 @@ def process_group_v2(
     if rgb_method == "trilogy":
         rgb, ref_hdr = build_rgb_trilogy(group_dir, str(group_id))
         if rgb is not None:
-            # F277W→G is bright in NIR-only fields; reduce green to remove
-            # the yellowish-green cast without affecting galaxy morphology
             import numpy as np
-            rgb = np.clip(rgb * np.array([1.06, 0.65, 1.45], dtype=np.float32),
-                          0, 1)
+            from scipy.ndimage import gaussian_filter
+            # Color balance: reduce NIR green cast, boost blue for navy background
+            rgb = np.clip(rgb * np.array([1.06, 0.65, 1.45], dtype=np.float32), 0, 1)
+            # Unsharp mask: gentle sharpening to enhance galaxy structure
+            # sigma=1.5px, amount=0.20 — subtle, avoids noise amplification
+            blurred = gaussian_filter(rgb, sigma=[1.5, 1.5, 0])
+            rgb = np.clip(rgb + 0.20 * (rgb - blurred), 0, 1)
     else:
         rgb, ref_hdr = build_rgb_v2(group_dir, str(group_id), cfg=cfg, verbose=verbose)
 

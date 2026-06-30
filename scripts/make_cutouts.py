@@ -196,7 +196,12 @@ class _MosaicCache:
         print(f"  Loading {path.name} ...", flush=True)
         t0 = time.time()
         with fits.open(path, memmap=True) as h:
-            ext = 1 if (len(h) > 1 and h[1].data is not None) else 0
+            # Find first extension that contains a 2D image (skip BINTABLEs)
+            ext = 0
+            for i, hdu in enumerate(h):
+                if hdu.data is not None and len(hdu.data.shape) == 2:
+                    ext = i
+                    break
             data, header = h[ext].data.copy(), h[ext].header.copy()
         entry = {"data": data, "wcs": WCS(header)}
         print(f"  {data.shape}  {time.time()-t0:.1f}s", flush=True)
