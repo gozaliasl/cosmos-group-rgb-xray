@@ -45,6 +45,24 @@ DEFAULT_RADIUS_ARCMIN = 4.0
 
 
 # ---------------------------------------------------------------------------
+_CREDIT = "ESA/Webb, NASA & CSA, G. Gozaliasl, COSMOS team"
+
+
+def _add_credit(ax, text: str = _CREDIT) -> None:
+    """Add a credit line to the bottom-left corner of an image axes."""
+    ax.text(
+        0.01, 0.01, text,
+        transform=ax.transAxes,
+        fontsize=7, color="white", alpha=0.85,
+        ha="left", va="bottom",
+        fontfamily="monospace",
+        path_effects=[
+            __import__("matplotlib.patheffects", fromlist=["withStroke"])
+            .withStroke(linewidth=1.5, foreground="black")
+        ],
+    )
+
+
 # Catalog loading (same as v1)
 # ---------------------------------------------------------------------------
 
@@ -191,6 +209,7 @@ def process_group_v2(
         show_contours=True, **xp,
     )
     ax.imshow(rgb_xray, origin="upper", interpolation="nearest")
+    _add_credit(ax)
     fig.savefig(out_png, dpi=300, bbox_inches="tight", pad_inches=0)
     plt.close(fig)
 
@@ -207,6 +226,7 @@ def process_group_v2(
         show_contours=False, **xp_nc,
     )
     ax2.imshow(rgb_xray_nc, origin="upper", interpolation="nearest")
+    _add_credit(ax2)
     fig2.savefig(out_png_nc, dpi=300, bbox_inches="tight", pad_inches=0)
     plt.close(fig2)
 
