@@ -215,13 +215,19 @@ def cut_and_save(
         return False
 
     data, wcs_obj = entry["data"], entry["wcs"]
-    # Use pixel_scale_matrix so this works for both CDELT and CD-matrix WCS
-    import numpy as _np
-    pix_scale = float(_np.sqrt(abs(_np.linalg.det(wcs_obj.pixel_scale_matrix)))) * 3600.0
-    size_pix  = max(int(size_arcsec / pix_scale), 10)
+
+    # proj_plane_pixel_scales works correctly for both CDELT and CD-matrix WCS
+    from astropy.wcs.utils import proj_plane_pixel_scales as _pps
+    pix_scale = float(_pps(wcs_obj)[0]) * 3600.0   # arcsec/pixel
+    size_pix  = int(size_arcsec / pix_scale)
 
     coord = SkyCoord(ra=ra * u.deg, dec=dec * u.deg)
     px, py = wcs_obj.world_to_pixel(coord)
+
+    # Skip if centre is outside the tile footprint entirely
+    if not (0 <= float(px) < data.shape[1] and 0 <= float(py) < data.shape[0]):
+        print(f"  {label} outside tile — skipping", flush=True)
+        return False
 
     try:
         cutout = Cutout2D(
@@ -232,8 +238,8 @@ def cut_and_save(
         print(f"  {label} cutout error: {e}", flush=True)
         return False
 
-    if 0 in cutout.data.shape:
-        print(f"  {label} empty cutout — outside tile?", flush=True)
+    if 0 in cutout.data.shape or min(cutout.data.shape) < 100:
+        print(f"  {label} cutout too small {cutout.data.shape} — outside tile?", flush=True)
         return False
 
     hdr = cutout.wcs.to_header()
