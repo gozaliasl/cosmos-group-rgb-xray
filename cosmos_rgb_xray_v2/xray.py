@@ -158,16 +158,18 @@ def overlay_xray_v2(
     # isolated point-source blobs from other cluster/AGN in the field
     from skimage.measure import label as _label
     from scipy.ndimage import distance_transform_edt as _dist
-    fill_mask = norm >= 0.22
+    # Fill only the main cluster body (norm ≥ 0.35 ≈ 2nd contour level).
+    # Outer faint emission (norm 0.22–0.35) is shown as contour lines only,
+    # not filled — this avoids the dark outer halo on the black background.
+    fill_mask = norm >= 0.35
     if np.any(fill_mask):
         lbl = _label(fill_mask)
         largest = np.argmax(np.bincount(lbl.ravel())[1:]) + 1
         fill_mask = (lbl == largest)
 
-    # Smooth feather at fill boundary: fade alpha to 0 over 80 px
-    # so the outer edge dissolves rather than hard-cutting to black.
+    # Smooth feather at fill boundary: fade alpha over 120 px
     dist_in = _dist(fill_mask).astype(np.float32)
-    feather  = np.clip(dist_in / 80.0, 0.0, 1.0)
+    feather  = np.clip(dist_in / 120.0, 0.0, 1.0)
     xray_rgba[..., 3] *= feather
 
     # Pure additive blending: emission only adds light, never darkens.
