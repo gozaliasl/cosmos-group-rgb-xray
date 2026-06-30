@@ -33,7 +33,7 @@ export PYTHONPATH="$REPO:${PYTHONPATH:-}"
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 CUTOUT_BASE=/automnt/n23data2/gozaliasl/groups_cutouts/hz_detected
-OUTPUT_BASE=/automnt/n23data2/gozaliasl/groups_cutouts/hz_detected_rgb
+OUTPUT_BASE=/automnt/n23data2/gozaliasl/groups_cutouts/hz_detected_rgb_v2
 CATALOG="$REPO/catalogs/hz_detected_cutout.csv"
 LOG_DIR="$CUTOUT_BASE/logs"
 
@@ -78,12 +78,11 @@ for SAMPLE in $SAMPLES; do
     echo ""
     echo "── $SAMPLE ── $N groups → $OUT_DIR"
 
-    python -m cosmos_rgb_xray.batch \
+    python -m cosmos_rgb_xray_v2.batch \
         --catalog    "$CATALOG"      \
         --data-root  "$DATA_DIR"     \
         --output-dir "$OUT_DIR"      \
         --jobs       "$JOBS"         \
-        --max-px     "$MAX_PX"       \
         --rgb-method "$RGB_METHOD"   \
         --verbose    \
         $EXTRA_FLAGS
