@@ -45,17 +45,20 @@ LOG_DIR="/automnt/n23data2/gozaliasl/groups_cutouts/logs"
 mkdir -p "$LOG_DIR"
 
 # ── Options ───────────────────────────────────────────────────────────────────
-MODE="${MODE:-both}"        # hsc | uvista | both
+MODE="${MODE:-both}"        # hsc | uvista | hst | clutch-hst | both | all
 OVERWRITE="${OVERWRITE:-0}"
 
 OVERWRITE_FLAG=""
 [[ "$OVERWRITE" == "1" ]] && OVERWRITE_FLAG="--overwrite"
 
 case "$MODE" in
-    hsc)    BAND_FLAGS="--hsc" ;;
-    uvista) BAND_FLAGS="--uvista" ;;
-    both)   BAND_FLAGS="--hsc --uvista" ;;
-    *)      echo "Unknown MODE=$MODE"; exit 1 ;;
+    hsc)        BAND_FLAGS="--hsc" ;;
+    uvista)     BAND_FLAGS="--uvista" ;;
+    hst)        BAND_FLAGS="--hst" ;;
+    clutch-hst) BAND_FLAGS="--clutch-hst" ;;
+    both)       BAND_FLAGS="--hsc --uvista" ;;
+    all)        BAND_FLAGS="--hsc --uvista --hst --clutch-hst" ;;
+    *)          echo "Unknown MODE=$MODE"; exit 1 ;;
 esac
 
 echo "======================================================"

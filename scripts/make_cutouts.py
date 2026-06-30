@@ -77,11 +77,21 @@ warnings.filterwarnings("ignore", category=UserWarning, module="astropy")
 # ── Default mosaic paths (Candide) — all overridable via CLI ─────────────────
 DEFAULT_JWST_DIR    = Path("/n23data2/cosmosweb/COSMOS-Web_Jan24/NIRCam/v0.8")
 DEFAULT_HST_DIR     = Path("/n17data/shuntov/COSMOS-Web/Images_HST-ACS/Jan24Tiles")
+DEFAULT_CLUTCH_DIR  = Path("/n23data1/sharish/hst/mosaics")   # CLUTCH HST bands
 DEFAULT_XRAY_DIR    = Path("/n23data2/gozaliasl/xray_maps")
 DEFAULT_UVISTA_DIR  = Path("/automnt/n23data1/UltraVista/DR4-RC2")
 DEFAULT_COSMOS2020_DIR = Path("/n08data/COSMOS2020/images")
 
 JWST_FILTERS    = ["F115W", "F150W", "F277W", "F444W"]
+
+# CLUTCH HST bands at /n23data1/sharish/hst/mosaics/<FILTER>/
+# Pattern: mosaic_clutch_hst_<FILTER>_<res>mas_<tile>_<type>_sci.fits.gz
+# F098M uses drz; F435W and F606W use drc
+CLUTCH_HST_BANDS = {
+    "F606W": "drc",
+    "F435W": "drc",
+    "F098M": "drz",
+}
 UVISTA_FILTERS  = ["Y", "J", "H", "Ks"]
 
 # HSC bands used for optical gap-fill: filename stems in COSMOS2020/images/
@@ -146,6 +156,14 @@ def hst_mosaic_path(tile: str, res: int = 30,
                     hst_dir: Path = DEFAULT_HST_DIR) -> Path:
     return hst_dir / (
         f"mosaic_cosmos_web_2024jan_{res}mas_tile_{tile}_hst_acs_wfc_f814w_drz_zp-28.09.fits"
+    )
+
+
+def clutch_mosaic_path(filter_name: str, tile: str, res: int = 30,
+                       clutch_dir: Path = DEFAULT_CLUTCH_DIR) -> Path:
+    drz_or_drc = CLUTCH_HST_BANDS.get(filter_name, "drz")
+    return clutch_dir / filter_name / (
+        f"mosaic_clutch_hst_{filter_name}_{res}mas_{tile}_{drz_or_drc}_sci.fits.gz"
     )
 
 
@@ -381,11 +399,12 @@ def main() -> None:
         epilog=__doc__,
     )
     # What to cut
-    pa.add_argument("--jwst",   action="store_true", help="Cut JWST NIRCam (F115W F150W F277W F444W)")
-    pa.add_argument("--hst",    action="store_true", help="Cut HST ACS F814W")
-    pa.add_argument("--xray",   action="store_true", help="Cut Chandra/XMM X-ray maps (large + compact)")
-    pa.add_argument("--uvista", action="store_true", help="Cut UltraVista Y/J/H/Ks (ground-based NIR fill)")
-    pa.add_argument("--hsc",    action="store_true", help="Cut HSC g/r/i from COSMOS2020 (optical gap-fill)")
+    pa.add_argument("--jwst",       action="store_true", help="Cut JWST NIRCam (F115W F150W F277W F444W)")
+    pa.add_argument("--hst",        action="store_true", help="Cut HST ACS F814W (COSMOS-Web tiles)")
+    pa.add_argument("--clutch-hst", action="store_true", help="Cut CLUTCH HST F606W, F435W, F098M")
+    pa.add_argument("--xray",       action="store_true", help="Cut Chandra/XMM X-ray maps (large + compact)")
+    pa.add_argument("--uvista",     action="store_true", help="Cut UltraVista Y/J/H/Ks (ground-based NIR fill)")
+    pa.add_argument("--hsc",        action="store_true", help="Cut HSC g/r/i from COSMOS2020 (optical gap-fill)")
 
     # Input / output
     pa.add_argument("--catalog",   required=True,  type=Path, help="Group catalog CSV")
@@ -395,8 +414,10 @@ def main() -> None:
     # Mosaic directories (defaults to Candide paths)
     pa.add_argument("--jwst-dir",  type=Path, default=DEFAULT_JWST_DIR,
                     help=f"JWST NIRCam mosaic directory (default: {DEFAULT_JWST_DIR})")
-    pa.add_argument("--hst-dir",   type=Path, default=DEFAULT_HST_DIR,
-                    help=f"HST ACS mosaic directory   (default: {DEFAULT_HST_DIR})")
+    pa.add_argument("--hst-dir",    type=Path, default=DEFAULT_HST_DIR,
+                    help=f"HST ACS mosaic directory       (default: {DEFAULT_HST_DIR})")
+    pa.add_argument("--clutch-dir", type=Path, default=DEFAULT_CLUTCH_DIR,
+                    help=f"CLUTCH HST mosaic directory    (default: {DEFAULT_CLUTCH_DIR})")
     pa.add_argument("--xray-dir",    type=Path, default=DEFAULT_XRAY_DIR,
                     help=f"X-ray map directory        (default: {DEFAULT_XRAY_DIR})")
     pa.add_argument("--uvista-dir",      type=Path, default=DEFAULT_UVISTA_DIR,
@@ -427,8 +448,8 @@ def main() -> None:
                     help="Centre X-ray cutout on optical (RA/Dec) or X-ray peak (default: xray)")
     args = pa.parse_args()
 
-    if not (args.jwst or args.hst or args.xray or args.uvista or args.hsc):
-        pa.error("Specify at least one of --jwst, --hst, --xray, --uvista, --hsc")
+    if not (args.jwst or args.hst or args.clutch_hst or args.xray or args.uvista or args.hsc):
+        pa.error("Specify at least one of --jwst, --hst, --clutch-hst, --xray, --uvista, --hsc")
 
     # Output root is created automatically — no manual mkdir needed
     args.output.mkdir(parents=True, exist_ok=True)
@@ -447,15 +468,17 @@ def main() -> None:
     print(f"Groups     : {len(groups)}", flush=True)
     print(f"Data types : "
           f"{'JWST ' if args.jwst else ''}"
-          f"{'HST '  if args.hst  else ''}"
-          f"{'X-ray' if args.xray else ''}"
+          f"{'HST-F814W ' if args.hst else ''}"
+          f"{'CLUTCH-HST ' if args.clutch_hst else ''}"
+          f"{'X-ray ' if args.xray else ''}"
           f"{'UltraVista ' if args.uvista else ''}"
           f"{'HSC' if args.hsc else ''}", flush=True)
-    if args.jwst:   print(f"JWST dir      : {args.jwst_dir}",        flush=True)
-    if args.hst:    print(f"HST dir       : {args.hst_dir}",         flush=True)
-    if args.xray:   print(f"X-ray dir     : {args.xray_dir}",        flush=True)
-    if args.uvista: print(f"UVista dir    : {args.uvista_dir}",       flush=True)
-    if args.hsc:    print(f"COSMOS2020 dir: {args.cosmos2020_dir}",   flush=True)
+    if args.jwst:       print(f"JWST dir      : {args.jwst_dir}",    flush=True)
+    if args.hst:        print(f"HST dir       : {args.hst_dir}",     flush=True)
+    if args.clutch_hst: print(f"CLUTCH dir    : {args.clutch_dir}",  flush=True)
+    if args.xray:       print(f"X-ray dir     : {args.xray_dir}",    flush=True)
+    if args.uvista:     print(f"UVista dir    : {args.uvista_dir}",   flush=True)
+    if args.hsc:        print(f"COSMOS2020 dir: {args.cosmos2020_dir}", flush=True)
     print(f"Output     : {args.output}/<catalog>/<group_id>/  (created automatically)", flush=True)
 
     # ── Pre-compute per-group metadata ────────────────────────────────────────
@@ -524,6 +547,29 @@ def main() -> None:
                 if cut_and_save(mosaic, g["ra"], g["dec"], hst_sz,
                                 out, f"[{g['id']}] F814W"):
                     results[g["id"]] += 1
+
+    # ── CLUTCH HST (F606W, F435W, F098M): same tile grid as COSMOS-Web ──────
+    if args.clutch_hst:
+        print(f"\n{'═'*50}\n  CLUTCH HST (F606W F435W F098M)\n{'═'*50}", flush=True)
+        for tile, tile_groups in sorted(by_tile.items()):
+            print(f"\n  Tile {tile}  ({len(tile_groups)} groups)", flush=True)
+            for filt in CLUTCH_HST_BANDS:
+                mosaic = clutch_mosaic_path(filt, tile, args.res, args.clutch_dir)
+                entry  = _cache.get(mosaic)
+                if entry is None:
+                    print(f"  {filt} — mosaic not found, skipping", flush=True)
+                    continue
+                print(f"  {filt}", flush=True)
+                for g in tile_groups:
+                    out = g["out_dir"] / f"{g['id']}_{filt}.fits"
+                    if out.exists() and not args.overwrite:
+                        print(f"    [{g['id']}] exists — skip", flush=True)
+                        results[g["id"]] += 1
+                        continue
+                    hst_sz = args.hst_size if args.hst_size else g["size"]
+                    if cut_and_save(mosaic, g["ra"], g["dec"], hst_sz,
+                                    out, f"[{g['id']}] {filt}"):
+                        results[g["id"]] += 1
 
     # ── X-ray: full-survey maps, no tile needed — cut all groups ─────────────
     if args.xray:
