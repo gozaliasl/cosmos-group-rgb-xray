@@ -29,11 +29,11 @@ BAND_PRIORITY_L = ["F150W", "F115W", "F200W"]
 class StretchConfig:
     method: str = "ghs"           # ghs | asinh | trilogy
     # GHS parameters
-    ghs_b: float = 5.0            # stretch intensity (larger = more aggressive)
+    ghs_b: float = 4.5            # stretch intensity
     ghs_D: float = 1.0            # local stretch at inflection point
     ghs_SP_pct: float = 0.5       # shadow protection percentile
-    ghs_HP_pct: float = 99.5      # highlight protection percentile
-    ghs_LP: float = 0.06          # linear point — low value brightens faint galaxies
+    ghs_HP_pct: float = 97.0      # highlight — lower so galaxy disks land in mid-range
+    ghs_LP: float = 0.12          # linear point — higher preserves faint disk outskirts
     # Luminance layer
     use_luminance: bool = True     # blend sharpest band as luminance layer
     luminance_weight: float = 0.25
@@ -66,7 +66,7 @@ class XrayConfig:
     norm_power: float = 1.0               # post-log power
     # Display
     alpha_peak_extended: float = 0.55
-    alpha_peak_compact: float = 0.42
+    alpha_peak_compact: float = 0.40
     # Contours
     contour_levels: Tuple[float, ...] = (0.20, 0.38, 0.62, 0.85)
     contour_linewidths: Tuple[float, ...] = (0.7, 0.9, 1.1, 1.3)

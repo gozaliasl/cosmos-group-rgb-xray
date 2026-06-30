@@ -34,9 +34,10 @@ import numpy as np
 from .config import V2Config, load_config
 from .rgb import build_rgb_v2
 
-# V2 X-ray overlay (improved alpha ramp) + v1 helper
+# V2 X-ray overlay (improved alpha ramp) + v1 helpers
 from cosmos_rgb_xray_v2.xray import overlay_xray_v2
 from cosmos_rgb_xray.xray import find_per_group_xray
+from cosmos_rgb_xray.rgb import build_rgb_trilogy
 
 log = logging.getLogger(__name__)
 
@@ -127,6 +128,7 @@ def process_group_v2(
     cfg: V2Config,
     overwrite: bool = False,
     verbose: bool = False,
+    rgb_method: str = "trilogy",
 ) -> bool:
 
     out_png    = output_dir / f"group_{group_id:05d}_rgb_xray.png"
@@ -148,8 +150,12 @@ def process_group_v2(
     snr      = info["snr"]
     cutout_arcsec = info.get("cutout_arcsec", 240.0)
 
-    # Build V2 RGB
-    rgb, ref_hdr = build_rgb_v2(group_dir, str(group_id), cfg=cfg, verbose=verbose)
+    # Build RGB — trilogy uses v1's proven pipeline; ghs uses v2's GHS stretch
+    if rgb_method == "trilogy":
+        rgb, ref_hdr = build_rgb_trilogy(group_dir, str(group_id))
+    else:
+        rgb, ref_hdr = build_rgb_v2(group_dir, str(group_id), cfg=cfg, verbose=verbose)
+
     if rgb is None:
         log.error("[%d] RGB build failed", group_id)
         return False
@@ -218,6 +224,7 @@ def run_batch_v2(
     overwrite: bool = False,
     verbose: bool = False,
     config_path: Optional[Path] = None,
+    rgb_method: str = "trilogy",
 ) -> None:
     cfg = load_config(config_path)
 
@@ -229,17 +236,17 @@ def run_batch_v2(
     if group_ids:
         groups = {k: v for k, v in groups.items() if k in group_ids}
 
-    log.info("V2 pipeline: %d groups", len(groups))
+    log.info("V2 pipeline: %d groups, rgb_method=%s", len(groups), rgb_method)
 
     if jobs == 1:
         for gid, info in groups.items():
             process_group_v2(gid, info, data_root, output_dir,
-                             cfg, overwrite, verbose)
+                             cfg, overwrite, verbose, rgb_method)
     else:
         with ProcessPoolExecutor(max_workers=jobs) as ex:
             futures = {
                 ex.submit(process_group_v2, gid, info, data_root, output_dir,
-                          cfg, overwrite, verbose): gid
+                          cfg, overwrite, verbose, rgb_method): gid
                 for gid, info in groups.items()
             }
             for fut in as_completed(futures):
@@ -270,6 +277,8 @@ def main() -> None:
     p.add_argument("--jobs",       type=int, default=1)
     p.add_argument("--overwrite",  action="store_true")
     p.add_argument("--verbose",    action="store_true")
+    p.add_argument("--rgb-method", choices=["trilogy", "ghs"], default="trilogy",
+                   help="RGB stretch method: trilogy (default, proven) or ghs (V2)")
     args = p.parse_args()
 
     if args.verbose:
@@ -284,6 +293,7 @@ def main() -> None:
         overwrite=args.overwrite,
         verbose=args.verbose,
         config_path=args.config,
+        rgb_method=args.rgb_method,
     )
 
 

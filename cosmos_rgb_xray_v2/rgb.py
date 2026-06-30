@@ -251,8 +251,12 @@ def build_rgb_v2(
             blend_width=cfg.ground_fill.blend_width_px,
         )
 
-    # ── 9. Sky floor — slight blue tint gives natural deep-field look ────────
-    rgb = np.clip(rgb + np.array([0.001, 0.001, 0.014], dtype=np.float32), 0, 1)
+    # ── 9. Per-channel white balance: NIR-only combos skew yellow-green
+    #       because F444W>>F277W>>F115W in surface brightness.
+    #       Scale channels so the median of bright-star pixels is neutral.
+    #       Use a fixed empirical matrix tuned for F444W/F277W/F115W.
+    wb = np.array([0.80, 0.90, 1.00], dtype=np.float32)   # dim R, dim G, keep B
+    rgb = np.clip(rgb * wb, 0, 1)
 
     # ── 10. North-up flip ────────────────────────────────────────────────────
     rgb = rgb[::-1, :, :].copy().astype(np.float32)
